@@ -1,0 +1,12 @@
+  
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+   
+  }
+  
+  .board {
+    margin-top: 10px;
+    width: 350px;
+    height: 300px;
+  }
