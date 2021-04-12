@@ -6,7 +6,7 @@ const FBAuth = require('./util/fbAuth');
 const port =  parseInt(process.env.PORT, 10) || 4000;
 
 
-const {signup, login, getAuthenticatedUser} = require('./handlers/users');
+const {signup, login, getAuthenticatedUser, uploadImage} = require('./handlers/users');
 const {getAllTests} = require('./handlers/test')
 //middlwares 
 app.use(express.json());
@@ -19,6 +19,7 @@ app.get('/user', FBAuth, getAuthenticatedUser);
 //users routes
 app.post('/signup',signup);
 app.post('/login',login);
+app.post('/user/image',uploadImage);
 
 
 

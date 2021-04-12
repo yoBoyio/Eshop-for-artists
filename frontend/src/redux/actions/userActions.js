@@ -1,5 +1,6 @@
 import {SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED, LOADING_USER } from '../type';
-import {api} from '../../axiosConfigs';;
+import {api} from '../../axiosConfigs';
+import axios from 'axios';
 
   
 export const loginUser = (userData, history) => (dispatch) =>{
@@ -58,6 +59,12 @@ export const getUserData = () => (dispatch) => {
         .catch( (err) => console.log(err));
 };
 
+export const uploadImage = (formData) => (dispatch) =>{
+    dispatch({ type: LOADING_USER });
+    axios.post('/user/image', formData).then(() =>{
+        dispatch(getUserData());
+    }).catch(err => console.log(err));
+}
 
 
 const setAuthorizationHeader = (token)=>{

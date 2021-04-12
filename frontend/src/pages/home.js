@@ -54,9 +54,10 @@ const styles = {
                { authenticated && 
                 <Card  className={classes.card}>    
                     <CardContent  className={classes.content}>
-                    <Typography variant="h2">Feed</Typography>  
+                    <Typography variant="h2">My Feed</Typography>  
                     </CardContent>
-                </Card> }
+                </Card> 
+                }
                     {/* {recentHistory} */}
                 </Grid>
                 <Grid item sm={4} xs={12}>

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Link } from 'react-router-dom';
@@ -7,10 +7,10 @@ import MyButton from '../util/MyButton';
 
 //redux 
 import {connect} from 'react-redux';
-import {logoutUser} from '../redux/actions/userActions';
+import {logoutUser, uploadImage } from '../redux/actions/userActions';
 //mui
 import Button from '@material-ui/core/Button';
-import  Paper from '@material-ui/core/Paper';
+import Paper from '@material-ui/core/Paper';
 import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
@@ -21,6 +21,7 @@ import LocationCityIcon from '@material-ui/icons/LocationCity';
 import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
 import SettingsIcon from '@material-ui/icons/Settings';
 import EditIcon from '@material-ui/icons/Edit';
+
 
 const styles = (theme) =>({
     paper: {
@@ -83,8 +84,10 @@ class Profile extends Component {
     }
     handleImageChange = (event) => {
         const image = event.target.files[0];
-        // send to server
-    }
+        const formData = new formData();
+        formData.append('image', image, image.name);
+        this.props.uploadImage(formData);
+    };
     handleEditPicture = () => {    
         const fileInput = document.getElementById('imageInput');
         fileInput.click();
@@ -105,25 +108,34 @@ class Profile extends Component {
                 <div className={classes.profile}>
                     <hr/>
                     <div className="image-wrapper">
-                        <img scr={imageUrl} className="profile-image"/>
+                        <img scr="myimage" alt="profile" className="profile-image"/>
                         <input type="file" id="imageInput" hidden="hidden" onChange={this.handleImageChange} />
                         <MyButton tip="Update Picture" onClick={this.handleEditPicture} className="button">
                             <EditIcon  color="secondary"/>
-                        </MyButton>
-                        
+                        </MyButton>   
                     </div>    
                         <hr/>
                         <div className="profile-details">
-                        <MuiLink style={{ color: 'black' }} variant="h5">
+                        <MuiLink compoment={Link} to={`/users/${handle}`} style={{ color: 'black' }} variant="h5">
                            {handle} 
                         </MuiLink>
                         <hr/>
                         <CalendarTodayIcon color="secondary"/>{' '}
                         <span > Member since {dayjs(createdAt).format('MM/YYYY')}</span>
                         <hr/>
-                        <LocationCityIcon color="secondary"/> {location}
-                        <hr/>
-                        <FormatQuoteIcon color="secondary"/> {bio}
+                        {location && (
+                            <Fragment>
+                            <LocationCityIcon color="secondary"/> <span>{location}</span>
+                            <hr/>
+                            </Fragment>
+                        )}
+                        {bio && (
+                            <Fragment>
+                             <FormatQuoteIcon color="secondary"/>  <span>{bio}</span>
+                            <hr/>
+                            </Fragment>
+                        )}
+
                     </div>
                     <hr/><hr/>
                     <MyButton tip="Logout" onClick={this.handleLogout}>
@@ -157,10 +169,11 @@ class Profile extends Component {
 const mapStateToProps = (state) => ({
     user: state.user
 });
-const mapActionsToProps = { logoutUser };
+const mapActionsToProps = { logoutUser, uploadImage };
 
 Profile.propTypes = {
     logoutUser: PropTypes.func.isRequired,
+    uploadImage: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired
 }
