@@ -18,6 +18,9 @@ import Typography from '@material-ui/core/Typography';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
+import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
+import SettingsIcon from '@material-ui/icons/Settings';
+import EditIcon from '@material-ui/icons/Edit';
 
 const styles = (theme) =>({
     paper: {
@@ -78,11 +81,19 @@ class Profile extends Component {
     handleLogout = () => {
         this.props.logoutUser();
     }
+    handleImageChange = (event) => {
+        const image = event.target.files[0];
+        // send to server
+    }
+    handleEditPicture = () => {    
+        const fileInput = document.getElementById('imageInput');
+        fileInput.click();
+    }
     render() {
         //todo add credentials
         const {classes,
              user:{
-                credentials: {handle,createdAt},
+                credentials: {handle,createdAt,imageUrl,bio,location},
                 loading,
                 authenticated
             }
@@ -93,22 +104,33 @@ class Profile extends Component {
             <Paper className={classes.paper}>
                 <div className={classes.profile}>
                     <hr/>
-                    <div className="profile-details">
-                        User's image here
+                    <div className="image-wrapper">
+                        <img scr={imageUrl} className="profile-image"/>
+                        <input type="file" id="imageInput" hidden="hidden" onChange={this.handleImageChange} />
+                        <MyButton tip="Update Picture" onClick={this.handleEditPicture} className="button">
+                            <EditIcon  color="secondary"/>
+                        </MyButton>
+                        
+                    </div>    
                         <hr/>
-                        <MuiLink  color="secondary" variant="h5">
-                            {handle}
+                        <div className="profile-details">
+                        <MuiLink style={{ color: 'black' }} variant="h5">
+                           {handle} 
                         </MuiLink>
                         <hr/>
                         <CalendarTodayIcon color="secondary"/>{' '}
-                        <span > Joined {dayjs(createdAt).format('MM/YYYY')}</span>
+                        <span > Member since {dayjs(createdAt).format('MM/YYYY')}</span>
                         <hr/>
-                        <LocationCityIcon color="secondary"/>City here
+                        <LocationCityIcon color="secondary"/> {location}
                         <hr/>
-                        User's bio here
+                        <FormatQuoteIcon color="secondary"/> {bio}
                     </div>
+                    <hr/><hr/>
                     <MyButton tip="Logout" onClick={this.handleLogout}>
                         <KeyboardReturnIcon color="secondary"/>
+                    </MyButton>
+                    <MyButton tip="Update Info">
+                        <SettingsIcon color="secondary"/>
                     </MyButton>
                 </div>
             </Paper>
