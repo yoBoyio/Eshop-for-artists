@@ -17,6 +17,7 @@ import Typography from '@material-ui/core/Typography';
 //icons
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import LocationCityIcon from '@material-ui/icons/LocationCity';
 
 const styles = (theme) =>({
     paper: {
@@ -93,12 +94,18 @@ class Profile extends Component {
                 <div className={classes.profile}>
                     <hr/>
                     <div className="profile-details">
-                        <MuiLink  color='secondary' variant="h5">
+                        User's image here
+                        <hr/>
+                        <MuiLink  color="secondary" variant="h5">
                             {handle}
                         </MuiLink>
                         <hr/>
                         <CalendarTodayIcon color="secondary"/>{' '}
                         <span > Joined {dayjs(createdAt).format('MM/YYYY')}</span>
+                        <hr/>
+                        <LocationCityIcon color="secondary"/>City here
+                        <hr/>
+                        User's bio here
                     </div>
                     <MyButton tip="Logout" onClick={this.handleLogout}>
                         <KeyboardReturnIcon color="secondary"/>
