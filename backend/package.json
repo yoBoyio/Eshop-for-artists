@@ -23,5 +23,6 @@
     "koa-ejs": "^4.3.0",
     "koa-json": "^2.0.2",
     "koa-router": "^10.0.0"
-  }
+  },
+  "proxy": "https://europe-west1-score4-aa163.cloudfunctions.net/api"
 }
