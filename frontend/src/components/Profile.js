@@ -6,8 +6,8 @@ import dayjs from 'dayjs';
 import MyButton from '../util/MyButton';
 
 //redux 
-import {connect} from 'react-redux';
-import {logoutUser, uploadImage } from '../redux/actions/userActions';
+import { connect } from 'react-redux';
+import { logoutUser, uploadImage } from '../redux/actions/userActions';
 //mui
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
@@ -23,17 +23,17 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import EditIcon from '@material-ui/icons/Edit';
 
 
-const styles = (theme) =>({
+const styles = (theme) => ({
     paper: {
         padding: 20,
-        
+
     },
     profile: {
         '& .image-wrapper': {
             textAlign: 'center',
             position: 'relative',
             '& button': {
-                position:'absolute',
+                position: 'absolute',
                 top: '80%',
                 left: '70%'
             }
@@ -45,7 +45,7 @@ const styles = (theme) =>({
             maxWidth: '100%',
             borderRadius: '50%'
         },
-        '& .profile-details':{
+        '& .profile-details': {
             textAlign: 'center',
             '& span, svg': {
                 verticalAlign: 'middle'
@@ -63,7 +63,7 @@ const styles = (theme) =>({
                 cursor: 'pointer'
             }
         },
-        
+
     },
     buttons: {
         textAlign: 'center',
@@ -71,8 +71,8 @@ const styles = (theme) =>({
             margin: '20px 10px'
         }
     },
-    txt:{
-        
+    txt: {
+
         color: "#fff"
     }
 });
@@ -88,15 +88,15 @@ class Profile extends Component {
         formData.append('image', image, image.name);
         this.props.uploadImage(formData);
     };
-    handleEditPicture = () => {    
+    handleEditPicture = () => {
         const fileInput = document.getElementById('imageInput');
         fileInput.click();
     }
     render() {
         //todo add credentials
-        const {classes,
-             user:{
-                credentials: {handle,createdAt,imageUrl,bio,location},
+        const { classes,
+            user: {
+                credentials: { handle, createdAt, imageUrl, bio, location },
                 loading,
                 authenticated
             }
@@ -104,64 +104,64 @@ class Profile extends Component {
 
         let profileMarkup = !loading ? (
             authenticated ? (
-            <Paper className={classes.paper}>
-                <div className={classes.profile}>
-                    <hr/>
-                    <div className="image-wrapper">
-                        <img scr="myimage" alt="profile" className="profile-image"/>
-                        <input type="file" id="imageInput" hidden="hidden" onChange={this.handleImageChange} />
-                        <MyButton tip="Update Picture" onClick={this.handleEditPicture} className="button">
-                            <EditIcon  color="secondary"/>
-                        </MyButton>   
-                    </div>    
-                        <hr/>
+                <Paper className={classes.paper}>
+                    <div className={classes.profile}>
+                        <hr />
+                        <div className="image-wrapper">
+                            <img scr="myimage" alt="profile" className="profile-image" />
+                            <input type="file" id="imageInput" hidden="hidden" onChange={this.handleImageChange} />
+                            <MyButton tip="Update Picture" onClick={this.handleEditPicture} className="button">
+                                <EditIcon color="secondary" />
+                            </MyButton>
+                        </div>
+                        <hr />
                         <div className="profile-details">
-                        <MuiLink compoment={Link} to={`/users/${handle}`} style={{ color: 'black' }} variant="h5">
-                           {handle} 
-                        </MuiLink>
-                        <hr/>
-                        <CalendarTodayIcon color="secondary"/>{' '}
-                        <span > Member since {dayjs(createdAt).format('MM/YYYY')}</span>
-                        <hr/>
-                        {location && (
-                            <Fragment>
-                            <LocationCityIcon color="secondary"/> <span>{location}</span>
-                            <hr/>
-                            </Fragment>
-                        )}
-                        {bio && (
-                            <Fragment>
-                             <FormatQuoteIcon color="secondary"/>  <span>{bio}</span>
-                            <hr/>
-                            </Fragment>
-                        )}
+                            <MuiLink compoment={Link} to={`/users/${handle}`} style={{ color: 'black' }} variant="h5">
+                                {handle}
+                            </MuiLink>
+                            <hr />
+                            <CalendarTodayIcon color="secondary" />{' '}
+                            <span > Member since {dayjs(createdAt).format('MM/YYYY')}</span>
+                            <hr />
+                            {location && (
+                                <Fragment>
+                                    <LocationCityIcon color="secondary" /> <span>{location}</span>
+                                    <hr />
+                                </Fragment>
+                            )}
+                            {bio && (
+                                <Fragment>
+                                    <FormatQuoteIcon color="secondary" />  <span>{bio}</span>
+                                    <hr />
+                                </Fragment>
+                            )}
 
+                        </div>
+                        <hr /><hr />
+                        <MyButton tip="Logout" onClick={this.handleLogout}>
+                            <KeyboardReturnIcon color="secondary" />
+                        </MyButton>
+                        <MyButton tip="Update Info">
+                            <SettingsIcon color="secondary" />
+                        </MyButton>
                     </div>
-                    <hr/><hr/>
-                    <MyButton tip="Logout" onClick={this.handleLogout}>
-                        <KeyboardReturnIcon color="secondary"/>
-                    </MyButton>
-                    <MyButton tip="Update Info">
-                        <SettingsIcon color="secondary"/>
-                    </MyButton>
-                </div>
-            </Paper>
-        ) : (
-            <Paper className={classes.paper}>
-                <Typography variant="body2" align="center">
-                    No profile found, please login again
+                </Paper>
+            ) : (
+                <Paper className={classes.paper}>
+                    <Typography variant="body2" align="center">
+                        No profile found, please login again
                     <div className={classes.buttons}>
-                        <Button variant="contained" color="primary" component={Link} to="/login">
-                            Login
+                            <Button variant="contained" color="primary" component={Link} to="/login">
+                                Login
                         </Button>
-                        <Button variant="contained" color="secondary" component={Link} to="/signup">
-                            Signup
+                            <Button variant="contained" color="secondary" component={Link} to="/signup">
+                                Signup
                         </Button>
-                    </div>
-                </Typography>
-            </Paper>
-           )
-        ) :(<p>loading...</p>);
+                        </div>
+                    </Typography>
+                </Paper>
+            )
+        ) : (<p>loading...</p>);
 
         return profileMarkup;
     }
@@ -177,4 +177,4 @@ Profile.propTypes = {
     user: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired
 }
-export default connect(mapStateToProps,mapActionsToProps)(withStyles(styles)(Profile));
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Profile));

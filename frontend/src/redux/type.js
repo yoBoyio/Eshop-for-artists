@@ -8,9 +8,9 @@ export const SET_ERRORS = 'SET_ERRORS';
 export const LOADING_UI = 'LOADING_UI';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 //data reducer types
-export const LOADING_DATA ='LOADING_DATA';
-export const SET_HISTORY ='SET_HISTORY';
-export const STOP_LOADING_UI ='STOP_LOADING_UI';
-export const SET_GAME ='SET_GAME';
+export const LOADING_DATA = 'LOADING_DATA';
+export const SET_HISTORY = 'SET_HISTORY';
+export const STOP_LOADING_UI = 'STOP_LOADING_UI';
+export const GET_SEARCHDATA = 'GET_SEARCHDATA';
 
 

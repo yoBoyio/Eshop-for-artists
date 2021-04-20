@@ -1,5 +1,5 @@
 //redux 
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import React, { Component } from 'react'
@@ -11,82 +11,82 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 //components
 import Profile from '../components/Profile';
-import {getHistory} from '../redux/actions/dataActions';
+import { getHistory } from '../redux/actions/dataActions';
 import History from '../components/History';
 //home page get data from api using axios
 const styles = {
-    card: {
-      position: 'relative',
-      display: 'flex',
-      marginBottom: 20,
-    },
-    image: {
-      minWidth: 200
-    },
-    content: {
-      padding: 25,
-      objectFit: 'cover',
-      marginLeft: "30%"
-    }
-  };
-  
- class home extends Component {
-      
-   
-    componentDidMount() {
+  card: {
+    position: 'relative',
+    display: 'flex',
+    marginBottom: 20,
+  },
+  image: {
+    minWidth: 200
+  },
+  content: {
+    padding: 25,
+    objectFit: 'cover',
+    marginLeft: "30%"
+  }
+};
 
-            this.setState(this.props.getHistory(this.props.user.credentials.handle));
-      }
-   
-    render() {
+class home extends Component {
 
-        const { history, loading } = this.props.data;
-        const { authenticated  } = this.props.user;
-        const {classes} = this.props;
 
-        // let recentHistory = !loading ? (authenticated ?
-        //     ( history.map((game) => <History game={game} key={game.room_id} />)
-        // ) : (<BoardSkeleton />)) : (<p>loading...</p>)
-        
-        return (
-            <Grid container spacing={10}>
-                <Grid item sm={8} xs={12}>
-               { authenticated && 
-                <Card  className={classes.card}>    
-                    <CardContent  className={classes.content}>
-                    <Typography variant="h2">My Feed</Typography>  
-                    </CardContent>
-                </Card> 
-                }
-                    {/* {recentHistory} */}
-                </Grid>
-                <Grid item sm={4} xs={12}>
-                    <Profile/>
-                </Grid>
-            </Grid>
-        )
-    }
+  componentDidMount() {
+
+    // this.setState(this.props.getHistory(this.props.user.credentials.handle));
+  }
+
+  render() {
+
+    const { history, loading } = this.props.data;
+    const { authenticated } = this.props.user;
+    const { classes } = this.props;
+
+    // let recentHistory = !loading ? (authenticated ?
+    //     ( history.map((game) => <History game={game} key={game.room_id} />)
+    // ) : (<BoardSkeleton />)) : (<p>loading...</p>)
+
+    return (
+      <Grid container spacing={10}>
+        <Grid item sm={8} xs={12}>
+          {authenticated &&
+            <Card className={classes.card}>
+              <CardContent className={classes.content}>
+                <Typography variant="h2">My Feed</Typography>
+              </CardContent>
+            </Card>
+          }
+          {/* {recentHistory} */}
+        </Grid>
+        <Grid item sm={4} xs={12}>
+          <Profile />
+        </Grid>
+      </Grid>
+    )
+  }
 }
 const mapStateToProps = (state) => ({
-    data: state.data,
-    user: state.user,
-    history: state.data.history,
-    classes: PropTypes.object.isRequired,
+  data: state.data,
+  user: state.user,
+  history: state.data.history,
+  classes: PropTypes.object.isRequired,
 
-  });
+});
 
 const mapActionsToProps = {
-    getHistory
+  getHistory
 }
 
 home.propTypes = {
-    getHistory:PropTypes.func.isRequired,
-    data: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
-  };
+  getHistory: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
+};
 
 export default connect(
-    mapStateToProps,
-    mapActionsToProps
-  )(withStyles(styles)(home));
+  mapStateToProps,
+  mapActionsToProps
+)(withStyles(styles)(home));
