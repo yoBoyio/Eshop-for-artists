@@ -9,7 +9,7 @@ const port =  parseInt(process.env.PORT, 10) || 4000;
 const {signup, login, getAuthenticatedUser, uploadImage, addUserDetails} = require('./handlers/users');
 const {getAllTests} = require('./handlers/test');
 const {getAllPosts, getPost, postOnePost, likePost, unlikePost, deletePost, commentOnPost} = require('./handlers/posts');
-const {insertItem, discoverItems, getItem, updateItem, addViews} = require('./handlers/items');
+const {insertItem, discoverItems, getItem, updateItem, addViews, deleteItem} = require('./handlers/items');
 const { db } = require('./util/admin');
 
 //middlwares 
@@ -36,11 +36,11 @@ app.get('post/:postId/unlike', FBAuth, unlikePost);
 app.post('post/:postId/comment', FBAuth, commentOnPost);
 
 // Item routes
-app.post('/items', insertItem);
+app.post('/items', FBAuth, insertItem);
 app.get('/items', discoverItems);
 app.get('/items/:itemId', getItem);
-app.post('/items/:itemId', updateItem);
-app.post('/items/addview/:itemId',addViews)
+app.post('/items/:itemId', FBAuth, updateItem);
+app.delete('/items/:itemId', FBAuth, deleteItem);
 
 // DB Triggers
 // exports.createNotificationOnLike = functions.region('europe-west1').firestore.document('likes/{id}')

@@ -22,29 +22,22 @@ exports.discoverItems = (req,res) => {
         sortby=req.body.sortby;
     }
     if (req.body.BPMstart!=null){
-        sortby=req.body.BPMstart;
+        BPMstart=req.body.BPMstart;
     }
     
     if (req.body.BPMend!=null){
-        sortby=req.body.BPMend;
-    }
-    
-    if (req.body.sortby!=null){
-        sortby=req.body.sortby;
+        BPMend=req.body.BPMend;
     }
 
     if(sortby==="high" || sortby==="low")
     {
         sortby="price";
-        if (sortby==="low")
+        if (req.body.sortby==="low")
             type="asc";
     }
 
-    //return res.json(type);
-
-
     if (req.body.genre!=null)
-    db.collection('item').orderBy("BPM","asc").where("BPM",">=",BPMstart).where("BPM","<=",BPMend).where("gerne","array-contains",req.body.genre).orderBy(sortby,type).limit(40).offset(page*40).get()
+    db.collection('item').orderBy("BPM","asc").where("BPM",">=",BPMstart).where("BPM","<=",BPMend).where("genre","array-contains",req.body.genre).orderBy(sortby,type).limit(40).offset(page*40).get()
         .then((data) => {
             let items = [];
             data.forEach((doc) => {
@@ -65,7 +58,8 @@ exports.discoverItems = (req,res) => {
         }).catch((err) => {
             console.error(err);
             res.status(500).json({ error: err.code });
-        }); 
+        });
+    else 
         db.collection('item').orderBy("BPM").where("BPM",">=",BPMstart).where("BPM","<=",BPMend).orderBy(sortby,type).limit(40).offset(page*40).get()
             .then((data) => {
                 let items = [];
@@ -125,8 +119,19 @@ exports.getItem = (req,res) => {
         if(!doc.exists){
             return res.status(404).json({error: 'Item not found'})
         }
+
         itemData = doc.data();
-        itemData.itemId = doc.id;
+
+        db.collection('item').doc(req.params.itemId).update({views: itemData.views+1}).then(doc =>
+        {
+            itemData = doc.data();
+            itemData.itemId = doc.id;
+            return res.json(itemData);
+        }).catch(err => {
+                console.error(err);
+                res.status(500).json({error: err.code});
+        });     
+
         res.json(itemData);        
     }).catch(err => {
         console.error(err);
@@ -142,6 +147,10 @@ exports.updateItem = (req,res) => {
     .then(doc => {
         if(!doc.exists){
             return res.status(404).json({error: 'Item not found'})
+        }
+
+        if(doc.data().userHandle !== req.user.handle){
+            return res.status(403).json({ error: 'Unauthorized'});
         }
         itemData = doc.data();
         itemData.itemId = doc.id;
@@ -171,26 +180,22 @@ exports.updateItem = (req,res) => {
 
 }
 
-exports.addViews = (req,res) => {
-    db.collection('item').doc(req.params.itemId).get()
-    .then(doc => {
+exports.deleteItem = (req,res) => {
+    const document= db.collection('item').doc(req.params.itemId)
+    document.get().then(doc => {
         if(!doc.exists){
-            return res.status(404).json({error: 'Item not found'})
+            return res.status(404).json({ error: 'Item not found'});
         }
-
-        itemData = doc.data();
-        itemData.itemId = doc.id;
-        itemData.views+=1;
-        db.collection('item').doc(req.params.itemId).update({views: itemData.views}).then(doc =>
-        {
-            return res.json(itemData);
-        }).catch(err => {
-            console.error(err);
-            res.status(500).json({error: err.code});
-        });      
+        if(doc.data().userHandle !== req.user.handle){
+            return res.status(403).json({ error: 'Unauthorized'});
+        }else{
+            return document.delete();
+        }
+    }).then(() => {
+        res.status(200).json({ status:"200 OK", description: 'item deleted successfully'});
     }).catch(err => {
         console.error(err);
-        res.status(500).json({error: err.code});
-    });
-
+        return res.status(500).json({ error: err.code});
+    })
+    
 }
