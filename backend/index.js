@@ -11,6 +11,7 @@ const {getAllTests} = require('./handlers/test');
 const {getAllPosts, getPost, postOnePost, likePost, unlikePost, deletePost, commentOnPost} = require('./handlers/posts');
 const {insertItem, discoverItems, getItem, updateItem, addViews, deleteItem} = require('./handlers/items');
 const { db } = require('./util/admin');
+const { insertItemToCart, getCart, deleteItemFromCart } = require('./handlers/cart');
 
 //middlwares 
 app.use(express.json());
@@ -41,6 +42,11 @@ app.get('/items', discoverItems);
 app.get('/items/:itemId', getItem);
 app.post('/items/:itemId', FBAuth, updateItem);
 app.delete('/items/:itemId', FBAuth, deleteItem);
+
+//cart routes
+app.post('/cart/:itemId', insertItemToCart);
+app.get('/cart/', getCart);
+app.delete('/cart/:itemId', deleteItemFromCart);
 
 // DB Triggers
 // exports.createNotificationOnLike = functions.region('europe-west1').firestore.document('likes/{id}')
