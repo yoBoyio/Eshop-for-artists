@@ -4,7 +4,9 @@ import {
   LOADING_UI,
   STOP_LOADING_UI,
   CLEAR_ERRORS,
-  GET_SEARCHDATA
+  GET_SEARCHDATA,
+  SET_ERRORS,
+  UPLOAD_ITEM
 } from '../type';
 
 export const getHistory = (handle) => (dispatch) => {
@@ -44,7 +46,35 @@ export const searchRelated = (query) => (dispatch) => {
       });
     });
 };
+//upload item
+export const uploadItem = (item) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  setAuthorizationHeader()
+  api
+    .post('/items', item,)
+    .then(res => {
+      dispatch({
+        type: UPLOAD_ITEM,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data
+      })
+    });
+};
 
 export const clearErrors = () => (dispatch) => {
   dispatch({ type: CLEAR_ERRORS });
+};
+
+const setAuthorizationHeader = () => {
+  const FBIdToken = localStorage.getItem('FBidToken');
+
+  api.defaults.headers.common['Authorization'] = FBIdToken;
+
+
 };

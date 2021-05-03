@@ -12,5 +12,8 @@ export const LOADING_DATA = 'LOADING_DATA';
 export const SET_HISTORY = 'SET_HISTORY';
 export const STOP_LOADING_UI = 'STOP_LOADING_UI';
 export const GET_SEARCHDATA = 'GET_SEARCHDATA';
+export const SET_TRACK = 'SET_TRACK';
+export const SET_TRACKS = 'SET_TRACKS';
+export const UPLOAD_ITEM = 'UPLOAD_ITEM';
 
 

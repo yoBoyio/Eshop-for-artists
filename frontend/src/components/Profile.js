@@ -84,7 +84,7 @@ class Profile extends Component {
     }
     handleImageChange = (event) => {
         const image = event.target.files[0];
-        const formData = new formData();
+        const formData = new FormData();
         formData.append('image', image, image.name);
         this.props.uploadImage(formData);
     };
@@ -108,7 +108,7 @@ class Profile extends Component {
                     <div className={classes.profile}>
                         <hr />
                         <div className="image-wrapper">
-                            <img scr="myimage" alt="profile" className="profile-image" />
+                            <img scr={imageUrl} alt="profile" className="profile-image" />
                             <input type="file" id="imageInput" hidden="hidden" onChange={this.handleImageChange} />
                             <MyButton tip="Update Picture" onClick={this.handleEditPicture} className="button">
                                 <EditIcon color="secondary" />

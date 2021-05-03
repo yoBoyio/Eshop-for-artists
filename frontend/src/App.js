@@ -17,6 +17,7 @@ import { logoutUser, getUserData } from './redux/actions/userActions';
 import home from './pages/home';
 import login from './pages/login';
 import signup from './pages/signup';
+import upload from './pages/Upload';
 //components
 import Navbar from './components/Navbar';
 import AuthRoute from './util/AuthRoute';
@@ -53,6 +54,8 @@ function App() {
               <AuthRoute exact path="/login" component={login}
               />
               <AuthRoute exact path="/signup" component={signup}
+              />
+              <Route exact path="/upload" component={upload}
               />
             </Switch>
           </div>
