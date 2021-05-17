@@ -1,9 +1,11 @@
 
-const { db, admin } = require('../util/admin');
+const { db, admin, storage} = require('../util/admin');
 
 const config = require('../util/config');
 
 const firebase = require('firebase');
+const json = require('koa-json');
+const { Bucket } = require('@google-cloud/storage');
 
 
 
@@ -84,30 +86,83 @@ exports.discoverItems = (req, res) => {
 };
 
 exports.insertItem = (req, res) => {
-    console.log(req)
-    const newItem = {
-        userHandle: req.body.handle,
-        createdAt: new Date().toISOString(),
-        BPM: req.body.BPM,
-        genre: req.body.genres,
-        imgPath: req.files.imgPath,
-        path: req.files.path,
-        price: req.body.price,
-        tags: req.body.tags,
-        title: req.body.title,
-        freeDownload: req.body.freeDownload,
-        views: 0
-    };
+    if(req.files.music != null || req.files.img != null)
+    {
+        var fileMusic = req.files.music;
+        const Musicext = "."+fileMusic.name.split('.')[fileMusic.name.split('.').length - 1];
+        if (fileMusic.mimetype != "audio/mpeg")
+            return res.status(500).json({error : 'Only Mp3 files allowed'});
+        var fileMusicname = Math.random().toString(36).substr(2, 9)+Musicext;
 
-    db.collection('item').add(newItem)
-        .then(doc => {
-            const retItem = newItem;
-            retItem.ItemId = doc.id;
-            res.json(retItem);
-        }).catch((err) => {
-            res.status(500).json({ error: 'Something went wrong' });
-            console.error(err);
-        });
+        var fileImg = req.files.img;
+        const Imgext = "."+fileImg.name.split('.')[fileImg.name.split('.').length - 1];
+        if (fileImg.mimetype != "image/jpeg" && fileImg.mimetype != "image/png" )
+            return res.status(500).json('"Error Message":"Only Png,jpeg files allowed"');
+        var fileImgname = Math.random().toString(36).substr(2, 9)+Imgext;
+    }
+    else
+        return res.status(500).json({error : 'Sound file or/and Image is/are missing'});
+
+    fileMusic.mv('./temp/'+fileMusicname,function (err)
+    {
+        if (err)
+        {
+            return res.json(err);
+        }
+        else
+        {
+            console.log("Music File uploaded");
+        }
+    });
+
+    fileImg.mv('./temp/'+fileImgname,function (err)
+    {
+        if (err)
+        {
+            return res.json(err);
+        }
+        else
+        {
+            console.log("Img File uploaded");
+        }
+    });
+
+    admin.storage().bucket("score4-aa163.appspot.com").upload('./temp/'+fileMusicname).
+    then(() => 
+    {
+        admin.storage().bucket("score4-aa163.appspot.com").upload('./temp/'+fileImgname).
+            then(() => 
+            {
+                const fs = require('fs');
+                fs.unlinkSync("./temp/"+fileMusicname);
+                fs.unlinkSync("./temp/"+fileImgname);
+
+                const newItem = {
+                    userHandle: req.body.handle,
+                    createdAt: new Date().toISOString(),
+                    BPM: req.body.BPM,
+                    genre: req.body.genres,
+                    imgPath: fileImgname,
+                    path: fileMusicname,
+                    price: req.body.price,
+                    tags: req.body.tags,
+                    title: req.body.title,
+                    freeDownload: req.body.freeDownload,
+                    views: 0
+                };
+
+                db.collection('item').add(newItem)
+                .then(doc => {
+                    const retItem = newItem;
+                    retItem.ItemId = doc.id;
+                    res.json(retItem);
+                }).catch((err) => {
+                    res.status(500).json({ error: 'Something went wrong' });
+                    console.error(err);
+                });
+
+            });
+    });
 }
 
 exports.getItem = (req, res) => {

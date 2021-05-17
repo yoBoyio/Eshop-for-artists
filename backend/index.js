@@ -2,7 +2,10 @@ const express = require('express')
 const app = express();
 const cors = require('cors')
 
+
 const FBAuth = require('./util/fbAuth');
+const fileUpload = require('express-fileupload');
+
 const port =  parseInt(process.env.PORT, 10) || 4000;
 
 
@@ -16,6 +19,7 @@ const { insertItemToCart, getCart, deleteItemFromCart } = require('./handlers/ca
 //middlwares 
 app.use(express.json());
 app.use(cors())
+app.use(fileUpload());
   
 //test routes
 app.get('/test', getAllTests);
@@ -28,7 +32,7 @@ app.post('/user/image',FBAuth, uploadImage);
 app.post('/user', FBAuth, addUserDetails);
 
 // posts routes
-app.get('/posts', getAllPosts);
+app.get('/posts', FBAuth, getAllPosts);
 app.post('/posts', FBAuth, postOnePost);
 app.get('/post/:postId', getPost);
 app.delete('/post/:postId', FBAuth, deletePost);
@@ -37,7 +41,7 @@ app.get('post/:postId/unlike', FBAuth, unlikePost);
 app.post('post/:postId/comment', FBAuth, commentOnPost);
 
 // Item routes
-app.post('/items', FBAuth, insertItem);
+app.post('/items', insertItem);
 app.get('/items', discoverItems);
 app.get('/items/:itemId', getItem);
 app.post('/items/:itemId', FBAuth, updateItem);
