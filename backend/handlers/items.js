@@ -6,7 +6,7 @@ const config = require('../util/config');
 const firebase = require('firebase');
 const json = require('koa-json');
 const { Bucket } = require('@google-cloud/storage');
-
+const { uuid } = require("uuidv4");
 
 
 exports.discoverItems = (req, res) => {
@@ -71,7 +71,6 @@ exports.discoverItems = (req, res) => {
                         BPM: doc.data().BPM,
                         genre: doc.data().genre,
                         imgPath: doc.data().imgPath,
-                        path: doc.data().path,
                         price: doc.data().price,
                         tags: doc.data().tags,
                         title: doc.data().tags,
@@ -85,7 +84,7 @@ exports.discoverItems = (req, res) => {
             });
 };
 
-exports.insertItem = (req, res) => {
+exports.insertItem  = async (req, res) => {
     if(req.files.music != null || req.files.img != null)
     {
         var fileMusic = req.files.music;
@@ -127,42 +126,71 @@ exports.insertItem = (req, res) => {
         }
     });
 
-    admin.storage().bucket("score4-aa163.appspot.com").upload('./temp/'+fileMusicname).
-    then(() => 
-    {
-        admin.storage().bucket("score4-aa163.appspot.com").upload('./temp/'+fileImgname).
-            then(() => 
-            {
-                const fs = require('fs');
-                fs.unlinkSync("./temp/"+fileMusicname);
+    let flag1 , flag2 ;
+    const fs = require('fs');
+
+    let url1=null;
+
+    
+
+    let url2=null;
+
+
+        await admin.storage().bucket("score4-aa163.appspot.com").upload('./temp/'+fileMusicname,{
+            public: true,
+            metadata: {
+                metadata: {
+                    firebaseStorageDownloadTokens: uuid(),
+                }
+            },
+        }).then((res) => {
+            fs.unlinkSync("./temp/"+fileMusicname); 
+            flag1 = true;
+            console.log("Music File uploaded to firestorage");
+            url1 = `https://firebasestorage.googleapis.com/v0/b/score4-aa163.appspot.com/o/${fileMusicname}?alt=media`;
+        }).catch((err) => {
+            console.log(err);
+        });
+
+        await admin.storage().bucket("score4-aa163.appspot.com").upload('./temp/'+fileImgname,{
+            public: true,
+            metadata: {
+                    metadata: {
+                        firebaseStorageDownloadTokens: uuid(),
+                    }
+                },
+            }).then((res) => { 
                 fs.unlinkSync("./temp/"+fileImgname);
-
-                const newItem = {
-                    userHandle: req.body.handle,
-                    createdAt: new Date().toISOString(),
-                    BPM: req.body.BPM,
-                    genre: req.body.genres,
-                    imgPath: fileImgname,
-                    path: fileMusicname,
-                    price: req.body.price,
-                    tags: req.body.tags,
-                    title: req.body.title,
-                    freeDownload: req.body.freeDownload,
-                    views: 0
-                };
-
-                db.collection('item').add(newItem)
-                .then(doc => {
-                    const retItem = newItem;
-                    retItem.ItemId = doc.id;
-                    res.json(retItem);
-                }).catch((err) => {
-                    res.status(500).json({ error: 'Something went wrong' });
-                    console.error(err);
-                });
-
+                flag2 = true;
+                console.log("Img File uploaded to firestorage");
+                if (res)
+                    url2= `https://firebasestorage.googleapis.com/v0/b/score4-aa163.appspot.com/o/${fileImgname}?alt=media`;
+            }).catch((err) => {
+                console.log(err);
             });
-    });
+            
+    const newItem = {
+        userHandle: req.body.handle,
+        createdAt: new Date().toISOString(),
+        BPM: req.body.BPM,
+        genre: req.body.genres,
+        imgPath: url2,
+        path: url1,
+        price: req.body.price,
+        tags: req.body.tags,
+        title: req.body.title,
+        freeDownload: req.body.freeDownload,
+        views: 0
+    };
+
+    if (flag1 && flag2)
+        db.collection('item').add(newItem)
+        .then(doc => {
+            res.status(200).json({ status: "200 OK", description: 'item deleted successfully' });
+        }).catch((err) => {
+            res.status(500).json({ error: 'Something went wrong' });
+            console.error(err);
+        });
 }
 
 exports.getItem = (req, res) => {
