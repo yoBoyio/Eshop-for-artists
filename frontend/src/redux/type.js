@@ -9,7 +9,7 @@ export const LOADING_UI = 'LOADING_UI';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 //data reducer types
 export const LOADING_DATA = 'LOADING_DATA';
-export const SET_HISTORY = 'SET_HISTORY';
+export const SET_ITEMS = 'SET_ITEMS';
 export const STOP_LOADING_UI = 'STOP_LOADING_UI';
 export const GET_SEARCHDATA = 'GET_SEARCHDATA';
 export const SET_TRACK = 'SET_TRACK';

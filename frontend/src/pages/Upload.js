@@ -150,11 +150,11 @@ class Upload extends Component {
 
     //request body params for item upload
     const formData = new FormData();
-    formData.append('path', this.state.mp3file);
-    formData.append('imgPath', this.state.photoFile);
+    formData.append('music', this.state.mp3file);
+    formData.append('img', this.state.photoFile);
     formData.append('handle', this.props.user.credentials.handle);
     formData.append('BPM', this.state.BPM);
-    formData.append('genres', this.state.selectedGenres);
+    formData.append('genre', this.state.selectedGenres);
     formData.append('price', this.state.price);
     formData.append('tags', this.state.tags);
     formData.append('title', this.state.title);

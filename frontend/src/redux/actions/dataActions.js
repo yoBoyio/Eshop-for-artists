@@ -1,6 +1,6 @@
 import { api } from '../../axiosConfigs';
 import {
-  SET_HISTORY,
+  SET_ITEMS,
   LOADING_UI,
   STOP_LOADING_UI,
   CLEAR_ERRORS,
@@ -9,21 +9,21 @@ import {
   UPLOAD_ITEM
 } from '../type';
 
-export const getHistory = (handle) => (dispatch) => {
+export const getItems = () => (dispatch) => {
   dispatch({ type: LOADING_UI });
   api
-    .get(`/history/${handle}`)
+    .get(`/items`)
     .then((res) => {
       dispatch({
-        type: SET_HISTORY,
+        type: SET_ITEMS,
         payload: res.data
       });
       dispatch({ type: STOP_LOADING_UI });
     })
     .catch((err) => {
       dispatch({
-        type: SET_HISTORY,
-        payload: []
+        type: SET_ITEMS,
+        payload: res.data
       });
     });
 };
@@ -57,6 +57,7 @@ export const uploadItem = (item) => (dispatch) => {
         type: UPLOAD_ITEM,
         payload: res.data
       });
+      dispatch({ type: STOP_LOADING_UI });
     })
     .catch(err => {
 
@@ -70,6 +71,7 @@ export const uploadItem = (item) => (dispatch) => {
 export const clearErrors = () => (dispatch) => {
   dispatch({ type: CLEAR_ERRORS });
 };
+
 
 const setAuthorizationHeader = () => {
   const FBIdToken = localStorage.getItem('FBidToken');

@@ -6,13 +6,13 @@ const cors = require('cors')
 const FBAuth = require('./util/fbAuth');
 const fileUpload = require('express-fileupload');
 
-const port =  parseInt(process.env.PORT, 10) || 4000;
+const port = parseInt(process.env.PORT, 10) || 4000;
 
 
-const {signup, login, getAuthenticatedUser, uploadImage, addUserDetails} = require('./handlers/users');
-const {getAllTests} = require('./handlers/test');
-const {getAllPosts, getPost, postOnePost, likePost, unlikePost, deletePost, commentOnPost} = require('./handlers/posts');
-const {insertItem, discoverItems, getItem, updateItem, addViews, deleteItem} = require('./handlers/items');
+const { signup, login, getAuthenticatedUser, uploadImage, addUserDetails } = require('./handlers/users');
+const { getAllTests } = require('./handlers/test');
+const { getAllPosts, getPost, postOnePost, likePost, unlikePost, deletePost, commentOnPost } = require('./handlers/posts');
+const { insertItem, discoverItems, getItem, updateItem, addViews, deleteItem, getItems } = require('./handlers/items');
 const { db } = require('./util/admin');
 const { insertItemToCart, getCart, deleteItemFromCart } = require('./handlers/cart');
 
@@ -20,15 +20,15 @@ const { insertItemToCart, getCart, deleteItemFromCart } = require('./handlers/ca
 app.use(express.json());
 app.use(cors())
 app.use(fileUpload());
-  
+
 //test routes
 app.get('/test', getAllTests);
 
 //users routes
-app.post('/signup',signup);
-app.post('/login',login);
+app.post('/signup', signup);
+app.post('/login', login);
 app.get('/user', FBAuth, getAuthenticatedUser);
-app.post('/user/image',FBAuth, uploadImage);
+app.post('/user/image', FBAuth, uploadImage);
 app.post('/user', FBAuth, addUserDetails);
 
 // posts routes
@@ -42,7 +42,8 @@ app.post('post/:postId/comment', FBAuth, commentOnPost);
 
 // Item routes
 app.post('/items', insertItem);
-app.get('/items', discoverItems);
+app.get('/search/items', discoverItems);
+app.get('/items', getItems);
 app.get('/items/:itemId', getItem);
 app.post('/items/:itemId', FBAuth, updateItem);
 app.delete('/items/:itemId', FBAuth, deleteItem);
@@ -145,5 +146,5 @@ app.delete('/cart/:itemId', deleteItemFromCart);
 
 // gameServer.listen(port);
 
-app.listen(port, () => 
-console.log(`Server listening http://localhost:${port}`) );
+app.listen(port, () =>
+    console.log(`Server listening http://localhost:${port}`));
