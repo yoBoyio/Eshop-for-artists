@@ -1,6 +1,6 @@
 import {
   LOADING_DATA,
-  SET_HISTORY,
+  SET_ITEMS,
   GET_SEARCHDATA,
   SET_TRACK,
   SET_TRACKS,
@@ -8,7 +8,7 @@ import {
 } from '../type';
 
 const initialState = {
-  history: [],
+  items: [],
   search: [],
   track: [],
   tracks: [],
@@ -22,10 +22,10 @@ export default function (state = initialState, action) {
         ...state,
         loading: true
       };
-    case SET_HISTORY:
+    case SET_ITEMS:
       return {
         ...state,
-        history: action.payload,
+        items: action.payload,
         loading: false
       };
     case GET_SEARCHDATA:

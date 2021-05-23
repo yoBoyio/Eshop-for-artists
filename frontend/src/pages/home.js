@@ -11,8 +11,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 //components
 import Profile from '../components/Profile';
-import { getHistory } from '../redux/actions/dataActions';
-import History from '../components/History';
+import { getItems } from '../redux/actions/dataActions';
+import Items from '../components/Items';
 //home page get data from api using axios
 const styles = {
   card: {
@@ -35,18 +35,20 @@ class home extends Component {
 
   componentDidMount() {
 
-    // this.setState(this.props.getHistory(this.props.user.credentials.handle));
+    this.setState(this.props.getItems());
   }
 
   render() {
 
-    const { history, loading } = this.props.data;
+    const { items, loading } = this.props.data;
     const { authenticated } = this.props.user;
     const { classes } = this.props;
 
-    // let recentHistory = !loading ? (authenticated ?
-    //     ( history.map((game) => <History game={game} key={game.room_id} />)
-    // ) : (<BoardSkeleton />)) : (<p>loading...</p>)
+    const displayItems = (items && items.length > 0 ?
+      items.map((item) =>
+        <Items key={item.itemId} item={item} />)
+      :
+      <Items items={false} />)
 
     return (
       <Grid container spacing={10}>
@@ -58,7 +60,7 @@ class home extends Component {
               </CardContent>
             </Card>
           }
-          {/* {recentHistory} */}
+          {displayItems}
         </Grid>
         <Grid item sm={4} xs={12}>
           <Profile />
@@ -70,13 +72,13 @@ class home extends Component {
 const mapStateToProps = (state) => ({
   data: state.data,
   user: state.user,
-  history: state.data.history,
+  items: state.data.items,
   classes: PropTypes.object.isRequired,
 
 });
 
 const mapActionsToProps = {
-  getHistory
+  getItems
 }
 
 home.propTypes = {

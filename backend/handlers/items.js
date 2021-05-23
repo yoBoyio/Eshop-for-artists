@@ -1,5 +1,5 @@
 
-const { db, admin, storage} = require('../util/admin');
+const { db, admin, storage } = require('../util/admin');
 
 const config = require('../util/config');
 
@@ -73,7 +73,7 @@ exports.discoverItems = (req, res) => {
                         imgPath: doc.data().imgPath,
                         price: doc.data().price,
                         tags: doc.data().tags,
-                        title: doc.data().tags,
+                        title: doc.data().title,
                         views: doc.data().views
                     });
                 });
@@ -83,97 +83,122 @@ exports.discoverItems = (req, res) => {
                 res.status(500).json({ error: err.code });
             });
 };
+exports.getItems = (req, res) => {
+    let page = 0;
+    let sortby = "views";
+    let BPMstart = 0;
+    let BPMend = 300;
+    let type = "desc";
 
-exports.insertItem  = async (req, res) => {
-    if(req.files.music != null || req.files.img != null)
-    {
+
+    db.collection('item').orderBy("views", "asc").get()
+        .then((data) => {
+            let items = [];
+            data.forEach((doc) => {
+                items.push({
+                    itemId: doc.id,
+                    createdAt: doc.data().createdAt,
+                    BPM: doc.data().BPM,
+                    genre: doc.data().genre,
+                    imgPath: doc.data().imgPath,
+                    path: doc.data().path,
+                    price: doc.data().price,
+                    tags: doc.data().tags,
+                    title: doc.data().title,
+                    views: doc.data().views
+                });
+            });
+            return res.json(items);
+        }).catch((err) => {
+            console.error(err);
+            res.status(500).json({ error: err.code });
+        });
+
+};
+
+exports.insertItem = async (req, res) => {
+    if (req.files.music != null || req.files.img != null) {
         var fileMusic = req.files.music;
-        const Musicext = "."+fileMusic.name.split('.')[fileMusic.name.split('.').length - 1];
+        const Musicext = "." + fileMusic.name.split('.')[fileMusic.name.split('.').length - 1];
         if (fileMusic.mimetype != "audio/mpeg")
-            return res.status(500).json({error : 'Only Mp3 files allowed'});
-        var fileMusicname = Math.random().toString(36).substr(2, 9)+Musicext;
+            return res.status(500).json({ error: 'Only Mp3 files allowed' });
+        var fileMusicname = Math.random().toString(36).substr(2, 9) + Musicext;
 
         var fileImg = req.files.img;
-        const Imgext = "."+fileImg.name.split('.')[fileImg.name.split('.').length - 1];
-        if (fileImg.mimetype != "image/jpeg" && fileImg.mimetype != "image/png" )
+        const Imgext = "." + fileImg.name.split('.')[fileImg.name.split('.').length - 1];
+        if (fileImg.mimetype != "image/jpeg" && fileImg.mimetype != "image/png")
             return res.status(500).json('"Error Message":"Only Png,jpeg files allowed"');
-        var fileImgname = Math.random().toString(36).substr(2, 9)+Imgext;
+        var fileImgname = Math.random().toString(36).substr(2, 9) + Imgext;
     }
     else
-        return res.status(500).json({error : 'Sound file or/and Image is/are missing'});
+        return res.status(500).json({ error: 'Sound file or/and Image is/are missing' });
 
-    fileMusic.mv('./temp/'+fileMusicname,function (err)
-    {
-        if (err)
-        {
+    fileMusic.mv('./temp/' + fileMusicname, function (err) {
+        if (err) {
             return res.json(err);
         }
-        else
-        {
+        else {
             console.log("Music File uploaded");
         }
     });
 
-    fileImg.mv('./temp/'+fileImgname,function (err)
-    {
-        if (err)
-        {
+    fileImg.mv('./temp/' + fileImgname, function (err) {
+        if (err) {
             return res.json(err);
         }
-        else
-        {
+        else {
             console.log("Img File uploaded");
         }
     });
 
-    let flag1 , flag2 ;
+    let flag1, flag2;
     const fs = require('fs');
 
-    let url1=null;
-
-    
-
-    let url2=null;
+    let url1 = null;
 
 
-        await admin.storage().bucket("score4-aa163.appspot.com").upload('./temp/'+fileMusicname,{
-            public: true,
+
+    let url2 = null;
+
+
+    await admin.storage().bucket("score4-aa163.appspot.com").upload('./temp/' + fileMusicname, {
+        public: true,
+        metadata: {
             metadata: {
-                metadata: {
-                    firebaseStorageDownloadTokens: uuid(),
-                }
-            },
-        }).then((res) => {
-            fs.unlinkSync("./temp/"+fileMusicname); 
-            flag1 = true;
-            console.log("Music File uploaded to firestorage");
-            url1 = `https://firebasestorage.googleapis.com/v0/b/score4-aa163.appspot.com/o/${fileMusicname}?alt=media`;
-        }).catch((err) => {
-            console.log(err);
-        });
+                firebaseStorageDownloadTokens: uuid(),
+            }
+        },
+    }).then((res) => {
+        fs.unlinkSync("./temp/" + fileMusicname);
+        flag1 = true;
+        console.log("Music File uploaded to firestorage");
+        url1 = `https://firebasestorage.googleapis.com/v0/b/score4-aa163.appspot.com/o/${fileMusicname}?alt=media`;
+    }).catch((err) => {
+        console.log(err);
+    });
 
-        await admin.storage().bucket("score4-aa163.appspot.com").upload('./temp/'+fileImgname,{
-            public: true,
+    await admin.storage().bucket("score4-aa163.appspot.com").upload('./temp/' + fileImgname, {
+        public: true,
+        metadata: {
             metadata: {
-                    metadata: {
-                        firebaseStorageDownloadTokens: uuid(),
-                    }
-                },
-            }).then((res) => { 
-                fs.unlinkSync("./temp/"+fileImgname);
-                flag2 = true;
-                console.log("Img File uploaded to firestorage");
-                if (res)
-                    url2= `https://firebasestorage.googleapis.com/v0/b/score4-aa163.appspot.com/o/${fileImgname}?alt=media`;
-            }).catch((err) => {
-                console.log(err);
-            });
-            
+                firebaseStorageDownloadTokens: uuid(),
+            }
+        },
+    }).then((res) => {
+        fs.unlinkSync("./temp/" + fileImgname);
+        flag2 = true;
+        console.log("Img File uploaded to firestorage");
+        if (res)
+            url2 = `https://firebasestorage.googleapis.com/v0/b/score4-aa163.appspot.com/o/${fileImgname}?alt=media`;
+    }).catch((err) => {
+        console.log(err);
+    });
+
     const newItem = {
         userHandle: req.body.handle,
         createdAt: new Date().toISOString(),
         BPM: req.body.BPM,
-        genre: req.body.genres,
+        genre: req.body.genre,
         imgPath: url2,
         path: url1,
         price: req.body.price,
@@ -185,12 +210,12 @@ exports.insertItem  = async (req, res) => {
 
     if (flag1 && flag2)
         db.collection('item').add(newItem)
-        .then(doc => {
-            res.status(200).json({ status: "200 OK", description: 'item deleted successfully' });
-        }).catch((err) => {
-            res.status(500).json({ error: 'Something went wrong' });
-            console.error(err);
-        });
+            .then(doc => {
+                res.status(200).json({ status: "200 OK", description: 'item deleted successfully' });
+            }).catch((err) => {
+                res.status(500).json({ error: 'Something went wrong' });
+                console.error(err);
+            });
 }
 
 exports.getItem = (req, res) => {
