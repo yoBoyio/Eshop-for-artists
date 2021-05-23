@@ -1,4 +1,4 @@
-import { api } from '../../axiosConfigs';
+import { api } from "../../axiosConfigs";
 import {
   SET_ITEMS,
   LOADING_UI,
@@ -6,8 +6,8 @@ import {
   CLEAR_ERRORS,
   GET_SEARCHDATA,
   SET_ERRORS,
-  UPLOAD_ITEM
-} from '../type';
+  UPLOAD_ITEM,
+} from "../type";
 
 export const getItems = () => (dispatch) => {
   dispatch({ type: LOADING_UI });
@@ -16,14 +16,14 @@ export const getItems = () => (dispatch) => {
     .then((res) => {
       dispatch({
         type: SET_ITEMS,
-        payload: res.data
+        payload: res.data,
       });
       dispatch({ type: STOP_LOADING_UI });
     })
     .catch((err) => {
       dispatch({
         type: SET_ERRORS,
-        payload: err.response.data
+        payload: err.response.data,
       });
     });
 };
@@ -35,36 +35,35 @@ export const searchRelated = (query) => (dispatch) => {
     .then((res) => {
       dispatch({
         type: GET_SEARCHDATA,
-        payload: res.data
+        payload: res.data,
       });
       dispatch({ type: STOP_LOADING_UI });
     })
     .catch((err) => {
       dispatch({
-        type: SET_ITEMS,
-        payload: []
+        type: SET_ERRORS,
+        payload: err.response.data,
       });
     });
 };
 //upload item
 export const uploadItem = (item) => (dispatch) => {
   dispatch({ type: LOADING_UI });
-  setAuthorizationHeader()
+  setAuthorizationHeader();
   api
-    .post('/items', item,)
-    .then(res => {
+    .post("/items", item)
+    .then((res) => {
       dispatch({
         type: UPLOAD_ITEM,
-        payload: res.data
+        payload: res.data,
       });
       dispatch({ type: STOP_LOADING_UI });
     })
-    .catch(err => {
-
+    .catch((err) => {
       dispatch({
         type: SET_ERRORS,
-        payload: err.response.data
-      })
+        payload: err.response.data,
+      });
     });
 };
 
@@ -72,11 +71,8 @@ export const clearErrors = () => (dispatch) => {
   dispatch({ type: CLEAR_ERRORS });
 };
 
-
 const setAuthorizationHeader = () => {
-  const FBIdToken = localStorage.getItem('FBidToken');
+  const FBIdToken = localStorage.getItem("FBidToken");
 
-  api.defaults.headers.common['Authorization'] = FBIdToken;
-
-
+  api.defaults.headers.common["Authorization"] = FBIdToken;
 };
