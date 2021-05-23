@@ -22,8 +22,8 @@ export const getItems = () => (dispatch) => {
     })
     .catch((err) => {
       dispatch({
-        type: SET_ITEMS,
-        payload: res.data
+        type: SET_ERRORS,
+        payload: err.response.data
       });
     });
 };
@@ -41,7 +41,7 @@ export const searchRelated = (query) => (dispatch) => {
     })
     .catch((err) => {
       dispatch({
-        type: SET_HISTORY,
+        type: SET_ITEMS,
         payload: []
       });
     });

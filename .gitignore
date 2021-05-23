@@ -83,3 +83,4 @@ node_modules/uuidv4/package.json
 node_modules/uuidv4/LICENSE.txt
 node_modules/uuidv4/lib/uuidv4.ts
 node_modules/uuidv4/CHANGELOG.md
+frontend/.eslintcache
