@@ -1,27 +1,27 @@
-import './App.css';
-import React from 'react';
+import "./App.css";
+import React from "react";
 
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-
-import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles'
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
-import themeFile from './util/theme';
-import jwtDecode from 'jwt-decode';
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import themeFile from "./util/theme";
+import jwtDecode from "jwt-decode";
 //redux
-import { Provider } from 'react-redux';
-import store from './redux/store';
-import { SET_AUTHENTICATED } from './redux/type';
-import { logoutUser, getUserData } from './redux/actions/userActions';
+import { Provider } from "react-redux";
+import store from "./redux/store";
+import { SET_AUTHENTICATED } from "./redux/type";
+import { logoutUser, getUserData } from "./redux/actions/userActions";
 //pages
-import home from './pages/home';
-import login from './pages/login';
-import signup from './pages/signup';
-import upload from './pages/Upload';
+import home from "./pages/home";
+import login from "./pages/login";
+import signup from "./pages/signup";
+import upload from "./pages/Upload";
+import search from "./pages/Search";
 //components
-import Navbar from './components/Navbar';
-import AuthRoute from './util/AuthRoute';
-import { api } from './axiosConfigs'
+import Navbar from "./components/Navbar";
+import AuthRoute from "./util/AuthRoute";
+import { api } from "./axiosConfigs";
 
 const theme = createMuiTheme(themeFile);
 
@@ -32,18 +32,16 @@ if (token) {
   const decodedToken = jwtDecode(token);
   if (decodedToken.exp * 1000 < Date.now()) {
     store.dispatch(logoutUser());
-    window.location.href = '/login';
+    window.location.href = "/login";
   } else {
     store.dispatch({ type: SET_AUTHENTICATED });
-    api.defaults.headers.common['Authorization'] = token;
+    api.defaults.headers.common["Authorization"] = token;
     store.dispatch(getUserData());
   }
 }
 
 function App() {
-
   return (
-
     <MuiThemeProvider theme={theme}>
       <Provider store={store}>
         <Router>
@@ -51,18 +49,15 @@ function App() {
           <div className="container">
             <Switch>
               <Route exact path="/" component={home} />
-              <AuthRoute exact path="/login" component={login}
-              />
-              <AuthRoute exact path="/signup" component={signup}
-              />
-              <Route exact path="/upload" component={upload}
-              />
+              <AuthRoute exact path="/login" component={login} />
+              <AuthRoute exact path="/signup" component={signup} />
+              <Route exact path="/upload" component={upload} />
+              <Route exact path="/search" component={search} />
             </Switch>
           </div>
         </Router>
       </Provider>
     </MuiThemeProvider>
-
   );
 }
 
