@@ -114,7 +114,6 @@ class Upload extends Component {
     this.setState({ checked: newChecked });
 
 
-
   }
   //===========TAGS=================//
   handleDeleteTags(removedTag) {
@@ -154,12 +153,17 @@ class Upload extends Component {
     formData.append('img', this.state.photoFile);
     formData.append('handle', this.props.user.credentials.handle);
     formData.append('BPM', this.state.BPM);
-    formData.append('genre', this.state.selectedGenres);
+    // formData.append('genre', this.state.selectedGenres);
     formData.append('price', this.state.price);
-    formData.append('tags', this.state.tags);
+    // formData.append('tags', this.state.tags);
     formData.append('title', this.state.title);
     formData.append('freeDownload', this.state.switchChecked);
-
+    this.state.selectedGenres.forEach((item) => {
+      formData.append('genre', item);
+    })
+    this.state.tags.forEach((item) => {
+      formData.append('tags', item);
+    })
     //axios post request
     this.props.uploadItem(formData);
 
@@ -196,6 +200,7 @@ class Upload extends Component {
 
       UI: { loading }
     } = this.props;
+
     return (
 
       <div>

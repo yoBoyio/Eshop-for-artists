@@ -12,6 +12,8 @@ import withStyles from "@material-ui/core/styles/withStyles";
 //components
 import Profile from "../components/Profile";
 import { getItems } from "../redux/actions/dataActions";
+import { getFavorites } from '../redux/actions/dataActions'
+
 import BeatsCard from "../components/BeatsCard";
 //home page get data from api using axios
 const styles = {
@@ -33,13 +35,14 @@ const styles = {
 class home extends Component {
   componentDidMount() {
     this.setState(this.props.getItems());
+    // if (this.props.handle)
+    this.props.getFavorites(this.props.handle)
   }
 
   render() {
     const { items, loading } = this.props.data;
     const { authenticated } = this.props.user;
-    const { classes } = this.props;
-
+    const { classes } = this.props
     const displayItems =
       items && items.length > 0 ? (
         items.map((item) => <BeatsCard key={item.itemId} item={item} />)
@@ -72,17 +75,21 @@ const mapStateToProps = (state) => ({
   user: state.user,
   items: state.data.items,
   classes: PropTypes.object.isRequired,
+  handle: state.user.credentials.handle,
 });
 
 const mapActionsToProps = {
   getItems,
+  getFavorites
 };
 
 home.propTypes = {
-  getHistory: PropTypes.func.isRequired,
+  getFavorites: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
+  handle: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
+
 };
 
 export default connect(

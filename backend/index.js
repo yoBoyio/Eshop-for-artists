@@ -15,7 +15,7 @@ const { getAllPosts, getPost, postOnePost, likePost, unlikePost, deletePost, com
 const { insertItem, discoverItems, getItem, updateItem, addViews, deleteItem, getItems, ItemsQuery } = require('./handlers/items');
 const { db } = require('./util/admin');
 const { insertItemToCart, getCart, deleteItemFromCart } = require('./handlers/cart');
-const { addFavorites, getFavorites, removeFavorites } = require('./handlers/favorites')
+const { addFavorites, getFavorites, deleteFavorites } = require('./handlers/favorites')
 
 //middlwares 
 app.use(express.json());
@@ -57,8 +57,8 @@ app.delete('/cart/:itemId', deleteItemFromCart);
 
 //favorites routes
 app.post('/favorites/:itemId', addFavorites);
-app.get('/favorites', getFavorites);
-app.delete('/favorites/:itemId', removeFavorites);
+app.get('/favorites/:handle', getFavorites);
+app.delete('/favorites/:itemId', deleteFavorites);
 
 // DB Triggers
 // exports.createNotificationOnLike = functions.region('europe-west1').firestore.document('likes/{id}')

@@ -18,6 +18,7 @@ import PublishIcon from "@material-ui/icons/Publish";
 import IconButton from "@material-ui/core/IconButton";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import SearchIcon from "@material-ui/icons/Search";
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 const styles = {
   grow: {
@@ -83,6 +84,11 @@ class Navbar extends Component {
               <Link to="/tracks">
                 <MyButton tip="Music">
                   <MusicNoteIcon />
+                </MyButton>
+              </Link>
+              <Link to="/favorites">
+                <MyButton tip="Favorites">
+                  <FavoriteBorderIcon />
                 </MyButton>
               </Link>
               <Link to="/upload">

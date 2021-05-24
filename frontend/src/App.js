@@ -12,12 +12,16 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import { SET_AUTHENTICATED } from "./redux/type";
 import { logoutUser, getUserData } from "./redux/actions/userActions";
+// import { getFavorites } from "./redux/actions/dataActions";
+
 //pages
 import home from "./pages/home";
 import login from "./pages/login";
 import signup from "./pages/signup";
 import upload from "./pages/Upload";
 import search from "./pages/Search";
+import favorites from "./pages/favorites";
+
 //components
 import Navbar from "./components/Navbar";
 import AuthRoute from "./util/AuthRoute";
@@ -37,6 +41,7 @@ if (token) {
     store.dispatch({ type: SET_AUTHENTICATED });
     api.defaults.headers.common["Authorization"] = token;
     store.dispatch(getUserData());
+    // store.dispatch(getFavorites('test'));
   }
 }
 
@@ -53,6 +58,7 @@ function App() {
               <AuthRoute exact path="/signup" component={signup} />
               <Route exact path="/upload" component={upload} />
               <Route exact path="/search" component={search} />
+              <Route exact path="/favorites" component={favorites} />
             </Switch>
           </div>
         </Router>

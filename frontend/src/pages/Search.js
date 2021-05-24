@@ -76,7 +76,7 @@ function Search(props) {
 
   //Submit Method
   onsubmit = () => {
-    props.searchRelated(`?query=${searchText}`);
+    props.searchRelated(searchText);
     setSubmittedtext(searchText);
     setSubmit(true);
   };

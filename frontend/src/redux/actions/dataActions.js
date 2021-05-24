@@ -13,17 +13,15 @@ import {
 } from "../type";
 
 //favorites
-export const getFavorites = (handle) => (dispatch, getState) => {
-  // setAuthorizationHeader();
+export const getFavorites = (handle) => (dispatch) => {
+  setAuthorizationHeader();
   console.log(handle)
-  const body = JSON.stringify({ handle: handle });
-
   api
-    .get("/favorites", body)
+    .get(`/favorites/${handle}`)
     .then((res) =>
       dispatch({
         type: GET_FAVORITES,
-        payload: res.data,
+        payload: res.data.items,
       })
     )
     .catch((err) =>
@@ -35,16 +33,12 @@ export const getFavorites = (handle) => (dispatch, getState) => {
 
 export const addFavorites = (itemId, handle) => (dispatch) => {
   dispatch({ type: LOADING_UI });
-  console.log(handle)
 
-  const body = JSON.stringify({ handle: handle });
   setAuthorizationHeader();
 
   api
     .post(`/favorites/${itemId}`, {
-
       handle: handle,
-
     })
     .then((res) =>
       dispatch({
@@ -61,6 +55,30 @@ export const addFavorites = (itemId, handle) => (dispatch) => {
     });
 };
 
+export const deleteFavorites = (itemId, handle) => (dispatch, getState) => {
+  dispatch({ type: LOADING_UI });
+
+  setAuthorizationHeader();
+
+  api
+    .delete(`/favorites/${itemId}`, {
+      handle: handle,
+    })
+    .then((res) => {
+      dispatch({
+        type: DELETE_FAVORITES,
+        payload: itemId,
+      })
+      dispatch({ type: STOP_LOADING_UI })
+    })
+    .catch((err) => {
+      dispatch({ type: STOP_LOADING_UI })
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data,
+      })
+    });
+};
 //items
 export const getItems = () => (dispatch) => {
   dispatch({ type: LOADING_UI });
@@ -84,7 +102,7 @@ export const getItems = () => (dispatch) => {
 export const searchRelated = (query) => (dispatch) => {
   dispatch({ type: LOADING_UI });
   api
-    .get(`/search/${query}`)
+    .get(`/items/search/${query}`)
     .then((res) => {
       dispatch({
         type: GET_SEARCHDATA,
