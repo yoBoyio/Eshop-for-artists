@@ -3,7 +3,7 @@ const { db } = require('../util/admin');
 exports.addFavorites = (req, res) => {
     console.log(req.body.handle)
 
-    document = db.collection('item').doc(req.params.itemId).get()
+   document = db.collection('item').doc(req.params.itemId).get()
         .then(doc => {
             if (!doc.exists)
                 return res.status(404).json({ error: 'Items not found' });
@@ -92,4 +92,31 @@ exports.getFavorites = (req, res) => {
 
             })
         })
+}
+exports.removeFavorites = (req, res) => {
+    const document = db.collection('favorites').where("userHandle", "==", req.body.user.handle).get().
+        then(data => {
+
+            //if(!doc.exists)
+            //        return res.status(404).json({error: 'User have never added something to cart'});
+
+            let FavoritesData;
+            data.forEach((doc) => {
+                FavoritesData = doc.data();
+                FavoritesData.FavoritesId = doc.id;
+                const index = FavoritesData.items.indexOf(req.params.itemId);
+                if (index > -1) {
+                    FavoritesData.items.splice(index, 1);
+                }
+
+            })
+
+            db.collection('favorites').doc(FavoritesData.FavoritesId).update({ items: FavoritesData.items }).then(doc => {
+                return res.json(FavoritesData);
+            });
+
+        }).catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code });
+        });
 }

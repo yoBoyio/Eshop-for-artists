@@ -12,10 +12,10 @@ const port = parseInt(process.env.PORT, 10) || 4000;
 const { signup, login, getAuthenticatedUser, uploadImage, addUserDetails } = require('./handlers/users');
 const { getAllTests } = require('./handlers/test');
 const { getAllPosts, getPost, postOnePost, likePost, unlikePost, deletePost, commentOnPost } = require('./handlers/posts');
-const { insertItem, discoverItems, getItem, updateItem, addViews, deleteItem, getItems } = require('./handlers/items');
+const { insertItem, discoverItems, getItem, updateItem, addViews, deleteItem, getItems, ItemsQuery } = require('./handlers/items');
 const { db } = require('./util/admin');
 const { insertItemToCart, getCart, deleteItemFromCart } = require('./handlers/cart');
-const { addFavorites, getFavorites } = require('./handlers/favorites')
+const { addFavorites, getFavorites, removeFavorites } = require('./handlers/favorites')
 
 //middlwares 
 app.use(express.json());
@@ -42,12 +42,13 @@ app.get('post/:postId/unlike', FBAuth, unlikePost);
 app.post('post/:postId/comment', FBAuth, commentOnPost);
 
 // Item routes
-app.post('/items', insertItem);
-app.get('/search/items', discoverItems);
+app.post('/items', FBAuth, insertItem);
+app.get('/items/discover', discoverItems);
+app.get('/items/search/:query', ItemsQuery);
 app.get('/items', getItems);
 app.get('/items/:itemId', getItem);
 app.post('/items/:itemId', FBAuth, updateItem);
-app.delete('/items/:itemId', FBAuth, deleteItem);
+app.delete('/items/:itemId', deleteItem);
 
 //cart routes
 app.post('/cart/:itemId', insertItemToCart);
@@ -57,6 +58,7 @@ app.delete('/cart/:itemId', deleteItemFromCart);
 //favorites routes
 app.post('/favorites/:itemId', addFavorites);
 app.get('/favorites', getFavorites);
+app.delete('/favorites/:itemId', removeFavorites);
 
 // DB Triggers
 // exports.createNotificationOnLike = functions.region('europe-west1').firestore.document('likes/{id}')

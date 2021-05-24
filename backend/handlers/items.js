@@ -8,7 +8,48 @@ const json = require('koa-json');
 const { Bucket } = require('@google-cloud/storage');
 const { uuid } = require("uuidv4");
 
+const algoliasearch = require('algoliasearch');
+const client = algoliasearch('BN69NYV043', 'f7969b14dd444ac1e31ceb57754bc0a5');
+const index = client.initIndex('items');
 
+exports.ItemsQuery  = (req, res) => {
+
+    index.search(req.params.query, {
+        attributesToRetrieve: ['title', 'userHandle', 'tags', 'genre', 'BPM'],
+        hitsPerPage: 100,
+      }).then( ({ hits }) => {
+        let items = [];
+        hits.forEach( async (hit) => 
+        {
+            
+            await db.collection('item').doc(hit.objectID).get()
+            .then(doc => {
+
+                items.push(
+                {
+                    itemId: doc.id,
+                    createdAt: doc.data().createdAt,
+                    BPM: doc.data().BPM,
+                    genre: doc.data().genre,
+                    imgPath: doc.data().imgPath,
+                    path: doc.data().path,
+                    price: doc.data().price,
+                    tags: doc.data().tags,
+                    title: doc.data().title,
+                    views: doc.data().views
+                });
+                
+                if (items.length === hits.length)
+                    return res.json(items);
+            }).catch((err) => {
+                console.error(err);
+                res.status(500).json({ error: err.code });
+            });
+            
+        });
+
+      });
+}
 exports.discoverItems = (req, res) => {
     let page = 0;
     let sortby = "views";
@@ -228,6 +269,17 @@ exports.insertItem = async (req, res) => {
     if (flag1 && flag2)
         db.collection('item').add(newItem)
             .then(doc => {
+
+                index.saveObject({
+                    objectID: doc.id,
+                    title: newItem.title,
+                    userHandle: newItem.userHandle,
+                    tags: newItem.tags,
+                    genre: newItem.genre,
+                    BPM: newItem.BPM
+                  }).then(({ objectID }) => {
+                    console.log("inserted: " + objectID);
+                  });
                 res.status(200).json({ status: "200 OK", description: 'item deleted successfully' });
             }).catch((err) => {
                 res.status(500).json({ error: 'Something went wrong' });
@@ -290,6 +342,16 @@ exports.updateItem = (req, res) => {
             if (req.body.item.freeDownload != null)
                 itemData.freeDownload = req.body.item.freeDownload;
             db.collection('item').doc(req.params.itemId).update({ BPM: itemData.BPM, genre: itemData.genre, price: itemData.price, tags: itemData.tags, title: itemData.title, freeDownload: itemData.freeDownload }).then(doc => {
+                index.partialUpdateObject({
+                    objectID: doc.id,
+                    title: itemData.title,
+                    userHandle: itemData.userHandle,
+                    tags: itemData.tags,
+                    genre: itemData.genre,
+                    BPM: itemData.BPM
+                  }).then(({ objectID }) => {
+                    console.log("updated: " + objectID);
+                  });
                 return res.json(itemData);
             }).catch(err => {
                 console.error(err);
@@ -309,11 +371,13 @@ exports.deleteItem = (req, res) => {
             return res.status(404).json({ error: 'Item not found' });
         }
         if (doc.data().userHandle !== req.user.handle) {
-            return res.status(403).json({ error: 'Unauthorized' });
+           return res.status(403).json({ error: 'Unauthorized' });
         } else {
-            return document.delete();
+            document.delete();
+            index.deleteObject(doc.id);
         }
     }).then(() => {
+        
         res.status(200).json({ status: "200 OK", description: 'item deleted successfully' });
     }).catch(err => {
         console.error(err);
