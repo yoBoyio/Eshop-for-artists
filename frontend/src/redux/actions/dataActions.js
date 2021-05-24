@@ -7,8 +7,61 @@ import {
   GET_SEARCHDATA,
   SET_ERRORS,
   UPLOAD_ITEM,
+  DELETE_FAVORITES,
+  ADD_FAVORITES,
+  GET_FAVORITES,
 } from "../type";
 
+//favorites
+export const getFavorites = (handle) => (dispatch, getState) => {
+  // setAuthorizationHeader();
+  console.log(handle)
+  const body = JSON.stringify({ handle: handle });
+
+  api
+    .get("/favorites", body)
+    .then((res) =>
+      dispatch({
+        type: GET_FAVORITES,
+        payload: res.data,
+      })
+    )
+    .catch((err) =>
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data,
+      }));
+};
+
+export const addFavorites = (itemId, handle) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  console.log(handle)
+
+  const body = JSON.stringify({ handle: handle });
+  setAuthorizationHeader();
+
+  api
+    .post(`/favorites/${itemId}`, {
+
+      handle: handle,
+
+    })
+    .then((res) =>
+      dispatch({
+        type: ADD_FAVORITES,
+        payload: res.data,
+      })
+    )
+    .catch((err) => {
+      dispatch({ type: STOP_LOADING_UI })
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data,
+      })
+    });
+};
+
+//items
 export const getItems = () => (dispatch) => {
   dispatch({ type: LOADING_UI });
   api

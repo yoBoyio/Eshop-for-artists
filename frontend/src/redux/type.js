@@ -15,5 +15,6 @@ export const GET_SEARCHDATA = 'GET_SEARCHDATA';
 export const SET_TRACK = 'SET_TRACK';
 export const SET_TRACKS = 'SET_TRACKS';
 export const UPLOAD_ITEM = 'UPLOAD_ITEM';
-
-
+export const DELETE_FAVORITES = 'DELETE_FAVORITES';
+export const ADD_FAVORITES = 'ADD_FAVORITES';
+export const GET_FAVORITES = 'GET_FAVORITES';
