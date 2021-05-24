@@ -5,10 +5,9 @@ import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
-
+import Favorites from './addToFavorites'
 //styles
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,6 +75,7 @@ const BeatsCard = ({ item }) => {
         image={item.imgPath}
         title="Live from space album cover"
       />
+      <Favorites itemId={item.itemId} />
     </Card>
   ) : (
     <Card className={classes.card}>
