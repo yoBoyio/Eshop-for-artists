@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
-import MovieCard from "../components/movies/MovieCard";
 import { connect } from "react-redux";
-import "../styles/watchlist.css";
+import "../styles/favorites.css";
 import { getFavorites } from '../redux/actions/dataActions'
+import BeatsCard from "../components/BeatsCard";
 
-export const favorites = ({ user, favorites, authenticated }) => {
+export const Favorites = ({ handle, favorites, authenticated, getFavorites }) => {
 
-  useEffect(() => {
-    getFavorites(user)
-  }, [])
+  // useEffect(() => {
+  //   getFavorites(handle)
+  // }, [])
+
   const notlogged = !authenticated ? (
     <h2 className="no-movies">Not a member</h2>
   ) : null;
@@ -16,18 +17,18 @@ export const favorites = ({ user, favorites, authenticated }) => {
   return (
     <div className="movie-page">
       <div className="header">
-        <h1 className="heading">My Watchlist</h1>
+        <h1 className="heading">My Favorites</h1>
 
         <span className="count-pill">
-          {favorites.length} {favorites.length === 1 ? "Movie" : "Movies"}
+          {favorites.length} {favorites.length === 1 ? "Favorite" : "Favorites"}
         </span>
       </div>
 
       {authenticated && favorites.length > 0 ? (
         <div className="movie-grid">
-          {favorites.map((movie) =>
-            movie.id !== 0 ? (
-              <MovieCard movie={movie} key={movie.id} type="watchlist" />
+          {favorites.map((item) =>
+            item.itemId !== 0 ? (
+              <BeatsCard key={item.itemId} item={item} />
             ) : null
           )}
         </div>
@@ -35,7 +36,7 @@ export const favorites = ({ user, favorites, authenticated }) => {
 
       {authenticated && favorites === 0 ? (
         <h2 className="no-movies">
-          <br></br>No movies in your list! Add some!
+          <br></br>No items in your list! Add some!
         </h2>
       ) : null}
       {notlogged}
@@ -46,9 +47,10 @@ export const favorites = ({ user, favorites, authenticated }) => {
 const mapStateToProps = (state) => ({
   credentials: state.user.credentials,
   user: state.user,
+  handle: state.user.credentials.handle,
   UI: state.UI,
   authenticated: state.user.authenticated,
-  // favorites: state.data.favorites,
+  favorites: state.data.favorites,
 });
 
-export default connect(mapStateToProps, null)(favorites);
+export default connect(mapStateToProps, { getFavorites })(Favorites);

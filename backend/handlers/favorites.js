@@ -1,9 +1,8 @@
 const { db } = require('../util/admin');
 
 exports.addFavorites = (req, res) => {
-    console.log(req.body.handle)
 
-   document = db.collection('item').doc(req.params.itemId).get()
+    document = db.collection('item').doc(req.params.itemId).get()
         .then(doc => {
             if (!doc.exists)
                 return res.status(404).json({ error: 'Items not found' });
@@ -53,8 +52,7 @@ exports.addFavorites = (req, res) => {
 }
 exports.getFavorites = (req, res) => {
     let retFavorites = [];
-
-    db.collection('favorites').where("userHandle", "==", req.body.handle).get()
+    db.collection('favorites').where("userHandle", "==", req.params.handle).get()
         .then(data => {
             if (data.docs == null) {
                 return res.status(400).json({ Message: 'User Has no favorites' })
@@ -63,6 +61,7 @@ exports.getFavorites = (req, res) => {
             data.forEach((doc) => {
                 FavoritesData = doc.data();
                 FavoritesData.favorite_id = doc.id;
+                // FavoritesData.items.push(rffe)
 
                 if (FavoritesData.items.length == 0) {
                     return res.json(FavoritesData);
@@ -76,7 +75,24 @@ exports.getFavorites = (req, res) => {
                             if (!doc.exists)
                                 retFavorites.push("Not Found");
                             else
-                                retFavorites.push(doc.data());
+
+                                retFavorites.push({
+                                    itemId: doc.id,
+                                    createdAt: doc.data().createdAt,
+                                    BPM: doc.data().BPM,
+                                    genre: doc.data().genre,
+                                    imgPath: doc.data().imgPath,
+                                    path: doc.data().path,
+                                    price: doc.data().price,
+                                    tags: doc.data().tags,
+                                    title: doc.data().tags,
+                                    views: doc.data().views,
+                                    userHandle: doc.data().userHandle
+
+                                });
+                            // retFavorites.items.push(doc.id);
+
+                            // retFavorites.push(doc.id);
                             itemsProcessed++;
 
                             if (itemsProcessed === FavoritesData.items.length) {
@@ -93,26 +109,28 @@ exports.getFavorites = (req, res) => {
             })
         })
 }
-exports.removeFavorites = (req, res) => {
-    const document = db.collection('favorites').where("userHandle", "==", req.body.user.handle).get().
+
+exports.deleteFavorites = (req, res) => {
+
+    const document = db.collection('favorites').where("userHandle", "==", req.body.handle).get().
         then(data => {
 
             //if(!doc.exists)
             //        return res.status(404).json({error: 'User have never added something to cart'});
 
-            let FavoritesData;
+            let CartData;
             data.forEach((doc) => {
-                FavoritesData = doc.data();
-                FavoritesData.FavoritesId = doc.id;
-                const index = FavoritesData.items.indexOf(req.params.itemId);
+                CartData = doc.data();
+                CartData.CartId = doc.id;
+                const index = CartData.items.indexOf(req.params.itemId);
                 if (index > -1) {
-                    FavoritesData.items.splice(index, 1);
+                    CartData.items.splice(index, 1);
                 }
 
             })
 
-            db.collection('favorites').doc(FavoritesData.FavoritesId).update({ items: FavoritesData.items }).then(doc => {
-                return res.json(FavoritesData);
+            db.collection('favorites').doc(CartData.CartId).update({ items: CartData.items }).then(doc => {
+                return res.json(CartData);
             });
 
         }).catch(err => {
@@ -120,3 +138,4 @@ exports.removeFavorites = (req, res) => {
             return res.status(500).json({ error: err.code });
         });
 }
+

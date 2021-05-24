@@ -48,13 +48,13 @@ const BeatsCard = ({ item }) => {
       <div className={classes.details}>
         <CardContent className={classes.content}>
           <Typography component="h5" variant="h5">
-            Beat name will be here
+            {item.title}
           </Typography>
           <Typography variant="subtitle1" color="textSecondary">
-            Beat artist
+            {item.userHandle}
           </Typography>
           <Typography variant="subtitle1" color="textSecondary">
-            Price?
+            {item.price} €
           </Typography>
         </CardContent>
         <div className={classes.controls}>
@@ -88,7 +88,6 @@ const BeatsCard = ({ item }) => {
 
   return (
     <div>
-      {console.log(item)}
       {displayItem}
     </div>
   );

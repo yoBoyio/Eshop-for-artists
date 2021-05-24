@@ -12,43 +12,42 @@ const algoliasearch = require('algoliasearch');
 const client = algoliasearch('BN69NYV043', 'f7969b14dd444ac1e31ceb57754bc0a5');
 const index = client.initIndex('items');
 
-exports.ItemsQuery  = (req, res) => {
-
+exports.ItemsQuery = (req, res) => {
     index.search(req.params.query, {
         attributesToRetrieve: ['title', 'userHandle', 'tags', 'genre', 'BPM'],
         hitsPerPage: 100,
-      }).then( ({ hits }) => {
+    }).then(({ hits }) => {
         let items = [];
-        hits.forEach( async (hit) => 
-        {
-            
-            await db.collection('item').doc(hit.objectID).get()
-            .then(doc => {
+        hits.forEach(async (hit) => {
 
-                items.push(
-                {
-                    itemId: doc.id,
-                    createdAt: doc.data().createdAt,
-                    BPM: doc.data().BPM,
-                    genre: doc.data().genre,
-                    imgPath: doc.data().imgPath,
-                    path: doc.data().path,
-                    price: doc.data().price,
-                    tags: doc.data().tags,
-                    title: doc.data().title,
-                    views: doc.data().views
+            await db.collection('item').doc(hit.objectID).get()
+                .then(doc => {
+
+                    items.push(
+                        {
+                            itemId: doc.id,
+                            createdAt: doc.data().createdAt,
+                            BPM: doc.data().BPM,
+                            genre: doc.data().genre,
+                            imgPath: doc.data().imgPath,
+                            path: doc.data().path,
+                            price: doc.data().price,
+                            tags: doc.data().tags,
+                            title: doc.data().title,
+                            views: doc.data().views,
+                            userHandle: doc.data().userHandle
+                        });
+                    console.log(items)
+                    if (items.length === hits.length)
+                        return res.json(items);
+                }).catch((err) => {
+                    console.error(err);
+                    res.status(500).json({ error: err.code });
                 });
-                
-                if (items.length === hits.length)
-                    return res.json(items);
-            }).catch((err) => {
-                console.error(err);
-                res.status(500).json({ error: err.code });
-            });
-            
+
         });
 
-      });
+    });
 }
 exports.discoverItems = (req, res) => {
     let page = 0;
@@ -93,7 +92,8 @@ exports.discoverItems = (req, res) => {
                         price: doc.data().price,
                         tags: doc.data().tags,
                         title: doc.data().tags,
-                        views: doc.data().views
+                        views: doc.data().views,
+                        userHandle: doc.data().userHandle
                     });
                 });
                 return res.json(items);
@@ -115,7 +115,8 @@ exports.discoverItems = (req, res) => {
                         price: doc.data().price,
                         tags: doc.data().tags,
                         title: doc.data().title,
-                        views: doc.data().views
+                        views: doc.data().views,
+                        userHandle: doc.data().userHandle
                     });
                 });
                 return res.json(items);
@@ -140,7 +141,8 @@ exports.getItems = (req, res) => {
                     price: doc.data().price,
                     tags: doc.data().tags,
                     title: doc.data().title,
-                    views: doc.data().views
+                    views: doc.data().views,
+                    userHandle: doc.data().userHandle
                 });
             });
             return res.json(items);
@@ -152,27 +154,6 @@ exports.getItems = (req, res) => {
 };
 
 
-exports.getPost = (req, res) => {
-    let postData = {};
-    db.doc(`/posts/${req.params.postId}`).get()
-        .then(doc => {
-            if (!doc.exists) {
-                return res.status(404).json({ error: 'Post not found' })
-            }
-            postData = doc.data();
-            postData.postId = doc.id;
-            return db.collection('comments').orderBy('createdAt', 'desc').where('postId', '==', req.params.postId).get();
-        }).then(data => {
-            postData.comments = [];
-            data.forEach(doc => {
-                postData.comments.push(doc.data());
-            });
-            return res.json(postData);
-        }).catch(err => {
-            console.error(err);
-            res.status(500).json({ error: err.code });
-        });
-};
 
 exports.insertItem = async (req, res) => {
     if (req.files.music != null || req.files.img != null) {
@@ -263,7 +244,7 @@ exports.insertItem = async (req, res) => {
         tags: req.body.tags,
         title: req.body.title,
         freeDownload: req.body.freeDownload,
-        views: 0
+        views: 0,
     };
 
     if (flag1 && flag2)
@@ -277,9 +258,9 @@ exports.insertItem = async (req, res) => {
                     tags: newItem.tags,
                     genre: newItem.genre,
                     BPM: newItem.BPM
-                  }).then(({ objectID }) => {
+                }).then(({ objectID }) => {
                     console.log("inserted: " + objectID);
-                  });
+                });
                 res.status(200).json({ status: "200 OK", description: 'item deleted successfully' });
             }).catch((err) => {
                 res.status(500).json({ error: 'Something went wrong' });
@@ -349,9 +330,9 @@ exports.updateItem = (req, res) => {
                     tags: itemData.tags,
                     genre: itemData.genre,
                     BPM: itemData.BPM
-                  }).then(({ objectID }) => {
+                }).then(({ objectID }) => {
                     console.log("updated: " + objectID);
-                  });
+                });
                 return res.json(itemData);
             }).catch(err => {
                 console.error(err);
@@ -371,13 +352,13 @@ exports.deleteItem = (req, res) => {
             return res.status(404).json({ error: 'Item not found' });
         }
         if (doc.data().userHandle !== req.user.handle) {
-           return res.status(403).json({ error: 'Unauthorized' });
+            return res.status(403).json({ error: 'Unauthorized' });
         } else {
             document.delete();
             index.deleteObject(doc.id);
         }
     }).then(() => {
-        
+
         res.status(200).json({ status: "200 OK", description: 'item deleted successfully' });
     }).catch(err => {
         console.error(err);
