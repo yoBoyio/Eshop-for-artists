@@ -37,10 +37,10 @@ export function AddToList({
         if (authenticated) {
             //doesnt exists on watchlist
             if (!added) {
-                addFavorites(itemId, handle);
+                addFavorites(itemId);
                 setAdded(true);
             } else if (added) {
-                deleteFavorites(itemId, handle)
+                deleteFavorites(itemId)
                 setAdded(false);
                 setFavoriteAction(true);
             }

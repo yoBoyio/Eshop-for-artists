@@ -12,7 +12,7 @@ exports.addFavorites = (req, res) => {
                 .then(data => {
                     if (data.size == 0) {
                         const favorites = {
-                            userHandle: req.body.handle,
+                            userHandle: req.user.handle,
                             items: [req.params.itemId]
                         };
 
@@ -51,8 +51,9 @@ exports.addFavorites = (req, res) => {
         });
 }
 exports.getFavorites = (req, res) => {
+    console.log(req.user)
     let retFavorites = [];
-    db.collection('favorites').where("userHandle", "==", req.params.handle).get()
+    db.collection('favorites').where("userHandle", "==", req.user.handle).get()
         .then(data => {
             if (data.docs == null) {
                 return res.status(400).json({ Message: 'User Has no favorites' })
@@ -111,8 +112,8 @@ exports.getFavorites = (req, res) => {
 }
 
 exports.deleteFavorites = (req, res) => {
-
-    const document = db.collection('favorites').where("userHandle", "==", req.body.handle).get().
+    // console.log(req.user)
+    const document = db.collection('favorites').where("userHandle", "==", req.user.handle).get().
         then(data => {
 
             //if(!doc.exists)

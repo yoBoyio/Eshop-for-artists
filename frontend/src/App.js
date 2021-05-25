@@ -12,7 +12,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import { SET_AUTHENTICATED } from "./redux/type";
 import { logoutUser, getUserData } from "./redux/actions/userActions";
-// import { getFavorites } from "./redux/actions/dataActions";
+import { getFavorites } from "./redux/actions/dataActions";
 
 //pages
 import home from "./pages/home";
@@ -41,7 +41,7 @@ if (token) {
     store.dispatch({ type: SET_AUTHENTICATED });
     api.defaults.headers.common["Authorization"] = token;
     store.dispatch(getUserData());
-    // store.dispatch(getFavorites('test'));
+    store.dispatch(getFavorites());
   }
 }
 

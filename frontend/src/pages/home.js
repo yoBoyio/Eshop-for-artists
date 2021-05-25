@@ -36,7 +36,7 @@ class home extends Component {
   componentDidMount() {
     this.setState(this.props.getItems());
     // if (this.props.handle)
-    this.props.getFavorites(this.props.handle)
+    // this.props.getFavorites(this.props.handle)
   }
 
   render() {

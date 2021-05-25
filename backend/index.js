@@ -56,9 +56,9 @@ app.get('/cart', getCart);
 app.delete('/cart/:itemId', deleteItemFromCart);
 
 //favorites routes
-app.post('/favorites/:itemId', addFavorites);
-app.get('/favorites/:handle', getFavorites);
-app.delete('/favorites/:itemId', deleteFavorites);
+app.post('/favorites/:itemId', FBAuth, addFavorites);
+app.get('/favorites', FBAuth, getFavorites);
+app.delete('/favorites/:itemId', FBAuth, deleteFavorites);
 
 // DB Triggers
 // exports.createNotificationOnLike = functions.region('europe-west1').firestore.document('likes/{id}')
