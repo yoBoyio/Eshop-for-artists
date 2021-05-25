@@ -13,11 +13,10 @@ import {
 } from "../type";
 
 //favorites
-export const getFavorites = (handle) => (dispatch) => {
+export const getFavorites = () => (dispatch) => {
   setAuthorizationHeader();
-  console.log(handle)
   api
-    .get(`/favorites/${handle}`)
+    .get(`/favorites`)
     .then((res) =>
       dispatch({
         type: GET_FAVORITES,
@@ -37,9 +36,7 @@ export const addFavorites = (itemId, handle) => (dispatch) => {
   setAuthorizationHeader();
 
   api
-    .post(`/favorites/${itemId}`, {
-      handle: handle,
-    })
+    .post(`/favorites/${itemId}`)
     .then((res) =>
       dispatch({
         type: ADD_FAVORITES,
@@ -55,15 +52,13 @@ export const addFavorites = (itemId, handle) => (dispatch) => {
     });
 };
 
-export const deleteFavorites = (itemId, handle) => (dispatch, getState) => {
+export const deleteFavorites = (itemId) => (dispatch, getState) => {
   dispatch({ type: LOADING_UI });
 
   setAuthorizationHeader();
 
   api
-    .delete(`/favorites/${itemId}`, {
-      handle: handle,
-    })
+    .delete(`/favorites/${itemId}`)
     .then((res) => {
       dispatch({
         type: DELETE_FAVORITES,
