@@ -12,7 +12,7 @@ const port = parseInt(process.env.PORT, 10) || 4000;
 const { signup, login, getAuthenticatedUser, uploadImage, addUserDetails } = require('./handlers/users');
 const { getAllTests } = require('./handlers/test');
 const { getAllPosts, getPost, postOnePost, likePost, unlikePost, deletePost, commentOnPost } = require('./handlers/posts');
-const { insertItem, discoverItems, getItem, updateItem, addViews, deleteItem, getItems, ItemsQuery } = require('./handlers/items');
+const { insertItem, discoverItems, getItem, updateItem, addViews, deleteItem, getItems, ItemsQuery, downloadItem, getUserItems } = require('./handlers/items');
 const { db } = require('./util/admin');
 const { insertItemToCart, getCart, deleteItemFromCart } = require('./handlers/cart');
 const { addFavorites, getFavorites, deleteFavorites } = require('./handlers/favorites')
@@ -49,6 +49,8 @@ app.get('/items', getItems);
 app.get('/items/:itemId', getItem);
 app.post('/items/:itemId', FBAuth, updateItem);
 app.delete('/items/:itemId', deleteItem);
+app.get('/items/download/:itemId', downloadItem);
+app.get('/items/user/:userhandle', getUserItems);
 
 //cart routes
 app.post('/cart/:itemId', insertItemToCart);

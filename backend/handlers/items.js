@@ -358,11 +358,52 @@ exports.deleteItem = (req, res) => {
             index.deleteObject(doc.id);
         }
     }).then(() => {
-
         res.status(200).json({ status: "200 OK", description: 'item deleted successfully' });
     }).catch(err => {
         console.error(err);
         return res.status(500).json({ error: err.code });
     })
 
+}
+
+exports.downloadItem = (req, res) => {
+    db.collection('item').doc(req.params.itemId).get()
+        .then( async doc => {
+            let itemData = doc.data();
+            let file = itemData.path.replace("https://firebasestorage.googleapis.com/v0/b/score4-aa163.appspot.com/o/","");
+            file = file.replace("?alt=media","");
+
+            const [metadata] = await admin.storage().bucket("score4-aa163.appspot.com").file(file).getMetadata();
+
+            let downloadlink = metadata.mediaLink;
+            res.status(200).json(downloadlink);
+
+        }).catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code });
+        });
+}
+
+exports.getUserItems = (req, res) => {
+
+    db.collection('item').where("userHandle", "==", req.params.userhandle).get()
+    .then( (data) => {
+        let items = [];
+        data.forEach((doc) => {
+            items.push({
+                itemId: doc.id,
+                createdAt: doc.data().createdAt,
+                BPM: doc.data().BPM,
+                genre: doc.data().genre,
+                imgPath: doc.data().imgPath,
+                path: doc.data().path,
+                price: doc.data().price,
+                tags: doc.data().tags,
+                title: doc.data().tags,
+                views: doc.data().views,
+                userHandle: doc.data().userHandle
+            });
+        });
+        return res.json(items);
+    });
 }
