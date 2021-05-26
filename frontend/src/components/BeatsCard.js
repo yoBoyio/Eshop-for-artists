@@ -7,14 +7,19 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
-import Favorites from './addToFavorites'
+import Favorites from "./addToFavorites";
+import Genres from "./Genres";
+import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
+import AddIcon from "@material-ui/icons/Add";
+import GetAppIcon from "@material-ui/icons/GetApp";
+
 //styles
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     paddingBottom: "35px",
     margin: "13px",
-    width: "560px",
+    width: "515px",
   },
   details: {
     display: "flex",
@@ -24,8 +29,8 @@ const useStyles = makeStyles((theme) => ({
     flex: "1 0 auto",
   },
   cover: {
-    width: "200px",
-    height: "200px",
+    width: "180px",
+    height: "180px",
   },
   controls: {
     display: "flex",
@@ -42,6 +47,8 @@ const useStyles = makeStyles((theme) => ({
 const BeatsCard = ({ item }) => {
   const classes = useStyles();
   const theme = useTheme();
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [genres, setGenres] = useState([]);
 
   const displayItem = item ? (
     <Card className={classes.root}>
@@ -56,7 +63,30 @@ const BeatsCard = ({ item }) => {
           <Typography variant="subtitle1" color="textSecondary">
             {item.price} €
           </Typography>
+          {/* {item.tags && (
+            <Genres
+              itemIds={item.genre}
+              selectedGenres={selectedGenres}
+              setSelectedGenres={setSelectedGenres}
+              genres={genres}
+              setGenres={setGenres}
+            />
+          )} */}
         </CardContent>
+        <div style={{ display: "flex" }}>
+          <Favorites itemId={item.itemId} />
+          <IconButton>
+            <AddShoppingCartIcon itemID={item.itemId} />
+          </IconButton>
+          <IconButton style={{ paddingLeft: "1px" }}>
+            <AddIcon itemID={item.itemId} />
+          </IconButton>
+          {item.freeDownload && item.freeDownload ? (
+            <IconButton>
+              <GetAppIcon itemID={item.itemId} />
+            </IconButton>
+          ) : null}
+        </div>
         <div className={classes.controls}>
           <IconButton aria-label="play/pause">
             <AudioPlayer
@@ -75,7 +105,6 @@ const BeatsCard = ({ item }) => {
         image={item.imgPath}
         title="Live from space album cover"
       />
-      <Favorites itemId={item.itemId} />
     </Card>
   ) : (
     <Card className={classes.card}>
@@ -86,11 +115,7 @@ const BeatsCard = ({ item }) => {
     </Card>
   );
 
-  return (
-    <div>
-      {displayItem}
-    </div>
-  );
+  return <div>{displayItem}</div>;
 };
 
 export default BeatsCard;
