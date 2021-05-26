@@ -11,11 +11,10 @@ exports.getCart = (req, res) => {
 
     let retItems = [];
 
-    db.collection('cart').where("userHandle", "==", req.body.user.handle).get()
+    db.collection('cart').where("userHandle", "==", req.user.handle).get()
         .then(data => {
-            console.log(req.body.handle)
 
-            if (!data.doc) {
+            if (data.docs == null) {
                 return res.status(404).json({ Message: 'User Has no cart' })
             }
 
@@ -34,7 +33,21 @@ exports.getCart = (req, res) => {
                             if (!doc.exists)
                                 retItems.push("Not Found");
                             else
-                                retItems.push(doc.data());
+                                // retItems.push(doc.data());
+                                retItems.push({
+                                    itemId: doc.id,
+                                    createdAt: doc.data().createdAt,
+                                    BPM: doc.data().BPM,
+                                    genre: doc.data().genre,
+                                    imgPath: doc.data().imgPath,
+                                    path: doc.data().path,
+                                    price: doc.data().price,
+                                    tags: doc.data().tags,
+                                    title: doc.data().title,
+                                    views: doc.data().views,
+                                    userHandle: doc.data().userHandle
+
+                                });
                             itemsProcessed++;
 
                             if (itemsProcessed === CartData.items.length) {
@@ -61,11 +74,11 @@ exports.insertItemToCart = (req, res) => {
                 return res.status(404).json({ error: 'Item not found' });
 
 
-            db.collection('cart').where("userHandle", "==", req.body.user.handle).get()
+            db.collection('cart').where("userHandle", "==", req.user.handle).get()
                 .then(data => {
                     if (data.size == 0) {
                         const newCart = {
-                            userHandle: req.body.user.handle,
+                            userHandle: req.user.handle,
                             items: [req.params.itemId]
                         };
 
@@ -107,7 +120,7 @@ exports.insertItemToCart = (req, res) => {
 
 exports.deleteItemFromCart = (req, res) => {
 
-    const document = db.collection('cart').where("userHandle", "==", req.body.user.handle).get().
+    const document = db.collection('cart').where("userHandle", "==", req.user.handle).get().
         then(data => {
 
             //if(!doc.exists)

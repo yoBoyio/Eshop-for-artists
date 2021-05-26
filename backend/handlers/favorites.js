@@ -8,7 +8,7 @@ exports.addFavorites = (req, res) => {
                 return res.status(404).json({ error: 'Items not found' });
 
 
-            db.collection('favorites').where("userHandle", "==", req.body.handle).get()
+            db.collection('favorites').where("userHandle", "==", req.user.handle).get()
                 .then(data => {
                     if (data.size == 0) {
                         const favorites = {
@@ -86,7 +86,7 @@ exports.getFavorites = (req, res) => {
                                     path: doc.data().path,
                                     price: doc.data().price,
                                     tags: doc.data().tags,
-                                    title: doc.data().tags,
+                                    title: doc.data().title,
                                     views: doc.data().views,
                                     userHandle: doc.data().userHandle
 

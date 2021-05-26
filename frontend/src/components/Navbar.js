@@ -18,8 +18,7 @@ import PublishIcon from "@material-ui/icons/Publish";
 import IconButton from "@material-ui/core/IconButton";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import SearchIcon from "@material-ui/icons/Search";
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-
+import StarBorderIcon from '@material-ui/icons/StarBorder';
 const styles = {
   grow: {
     flexGrow: 1,
@@ -65,14 +64,11 @@ class Navbar extends Component {
       <AppBar>
         <Toolbar className="nav-container">
           <Fragment>
-            <IconButton className={classes.root} component={Link} to="/search">
-              <SearchIcon />
-            </IconButton>
-          </Fragment>
-          <Fragment>
-            <IconButton className={classes.root} component={Link} to="/cart">
-              <ShoppingCartIcon />
-            </IconButton>
+            <Link to="/search">
+              <MyButton tip="Search">
+                <SearchIcon />
+              </MyButton>
+            </Link>
           </Fragment>
           {authenticated ? (
             <Fragment>
@@ -82,18 +78,23 @@ class Navbar extends Component {
                 </MyButton>
               </Link>
               <Link to="/tracks">
-                <MyButton tip="Music">
+                <MyButton tip="My Music">
                   <MusicNoteIcon />
-                </MyButton>
-              </Link>
-              <Link to="/favorites">
-                <MyButton tip="Favorites">
-                  <FavoriteBorderIcon />
                 </MyButton>
               </Link>
               <Link to="/upload">
                 <MyButton tip="Upload">
                   <PublishIcon />
+                </MyButton>
+              </Link>
+              <Link to="/favorites">
+                <MyButton tip="Favorites">
+                  <StarBorderIcon />
+                </MyButton>
+              </Link>
+              <Link to="/cart">
+                <MyButton tip="Checkout Cart">
+                  <ShoppingCartIcon />
                 </MyButton>
               </Link>
             </Fragment>

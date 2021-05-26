@@ -12,7 +12,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import { SET_AUTHENTICATED } from "./redux/type";
 import { logoutUser, getUserData } from "./redux/actions/userActions";
-import { getFavorites } from "./redux/actions/dataActions";
+import { getFavorites, getCart } from "./redux/actions/dataActions";
 
 //pages
 import home from "./pages/home";
@@ -21,6 +21,7 @@ import signup from "./pages/signup";
 import upload from "./pages/Upload";
 import search from "./pages/Search";
 import favorites from "./pages/favorites";
+import cart from "./pages/cart";
 
 //components
 import Navbar from "./components/Navbar";
@@ -41,7 +42,8 @@ if (token) {
     store.dispatch({ type: SET_AUTHENTICATED });
     api.defaults.headers.common["Authorization"] = token;
     store.dispatch(getUserData());
-    store.dispatch(getFavorites());
+    // store.dispatch(getFavorites());
+    // store.dispatch(getCart());
   }
 }
 
@@ -59,6 +61,7 @@ function App() {
               <Route exact path="/upload" component={upload} />
               <Route exact path="/search" component={search} />
               <Route exact path="/favorites" component={favorites} />
+              <Route exact path="/cart" component={cart} />
             </Switch>
           </div>
         </Router>

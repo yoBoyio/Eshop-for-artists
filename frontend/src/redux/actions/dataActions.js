@@ -10,6 +10,9 @@ import {
   DELETE_FAVORITES,
   ADD_FAVORITES,
   GET_FAVORITES,
+  DELETE_CART,
+  ADD_CART,
+  GET_CART
 } from "../type";
 
 //favorites
@@ -38,10 +41,9 @@ export const addFavorites = (itemId, handle) => (dispatch) => {
   api
     .post(`/favorites/${itemId}`)
     .then((res) =>
-      dispatch({
-        type: ADD_FAVORITES,
-        payload: res.data,
-      })
+      dispatch(
+        getItem(itemId, ADD_FAVORITES)
+      )
     )
     .catch((err) => {
       dispatch({ type: STOP_LOADING_UI })
@@ -74,6 +76,68 @@ export const deleteFavorites = (itemId) => (dispatch, getState) => {
       })
     });
 };
+//cart
+export const getCart = () => (dispatch) => {
+  setAuthorizationHeader();
+  api
+    .get(`/cart`)
+    .then((res) =>
+      dispatch({
+        type: GET_CART,
+        payload: res.data.items,
+      })
+    )
+    .catch((err) =>
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data,
+      }));
+};
+
+export const addCart = (itemId) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+
+  setAuthorizationHeader();
+
+  api
+    .post(`/cart/${itemId}`)
+    .then((res) =>
+      dispatch(dispatch(
+        getItem(itemId, ADD_CART)
+      ))
+    )
+    .catch((err) => {
+      dispatch({ type: STOP_LOADING_UI })
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data,
+      })
+    });
+};
+
+export const deleteCart = (itemId) => (dispatch, getState) => {
+  dispatch({ type: LOADING_UI });
+
+  setAuthorizationHeader();
+
+  api
+    .delete(`/cart/${itemId}`)
+    .then((res) => {
+      dispatch({
+        type: DELETE_CART,
+        payload: itemId,
+      })
+      dispatch({ type: STOP_LOADING_UI })
+    })
+    .catch((err) => {
+      dispatch({ type: STOP_LOADING_UI })
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data,
+      })
+    });
+};
+
 //items
 export const getItems = () => (dispatch) => {
   dispatch({ type: LOADING_UI });
@@ -94,6 +158,24 @@ export const getItems = () => (dispatch) => {
     });
 };
 
+export const getItem = (itemId, action) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  api
+    .get(`/items/${itemId}`)
+    .then((res) => {
+      dispatch({
+        type: action,
+        payload: res.data,
+      });
+      dispatch({ type: STOP_LOADING_UI });
+    })
+    .catch((err) => {
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data,
+      });
+    });
+};
 export const searchRelated = (query) => (dispatch) => {
   dispatch({ type: LOADING_UI });
   api
