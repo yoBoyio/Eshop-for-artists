@@ -7,11 +7,14 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
-import Favorites from "./addToFavorites";
 import Genres from "./Genres";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
-import AddIcon from "@material-ui/icons/Add";
 import GetAppIcon from "@material-ui/icons/GetApp";
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+
+import MyButton from "../util/MyButton";
+import Favorites from "./addToFavorites";
+import Cart from "./addToCart";
 
 //styles
 const useStyles = makeStyles((theme) => ({
@@ -75,16 +78,14 @@ const BeatsCard = ({ item }) => {
         </CardContent>
         <div style={{ display: "flex" }}>
           <Favorites itemId={item.itemId} />
-          <IconButton>
-            <AddShoppingCartIcon itemID={item.itemId} />
-          </IconButton>
-          <IconButton style={{ paddingLeft: "1px" }}>
-            <AddIcon itemID={item.itemId} />
-          </IconButton>
+          <Cart itemId={item.itemId} />
+          <MyButton tip='Like' style={{ paddingLeft: "1px" }}>
+            <FavoriteBorderIcon itemID={item.itemId} />
+          </MyButton>
           {item.freeDownload && item.freeDownload ? (
-            <IconButton>
+            <MyButton tip='download'>
               <GetAppIcon itemID={item.itemId} />
-            </IconButton>
+            </MyButton>
           ) : null}
         </div>
         <div className={classes.controls}>

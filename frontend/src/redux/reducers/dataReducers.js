@@ -8,6 +8,9 @@ import {
   DELETE_FAVORITES,
   ADD_FAVORITES,
   GET_FAVORITES,
+  DELETE_CART,
+  ADD_CART,
+  GET_CART
 } from '../type';
 
 const initialState = {
@@ -16,6 +19,7 @@ const initialState = {
   track: [],
   tracks: [],
   favorites: [],
+  cart: [],
   loading: false
 };
 
@@ -73,6 +77,27 @@ export default function (state = initialState, action) {
       return {
         ...state,
         favorites: [action.payload, ...state.favorites],
+        loading: false,
+      };
+    //CART
+    case GET_CART:
+      return {
+        ...state,
+        cart: action.payload,
+        loading: false,
+      };
+    case DELETE_CART:
+      return {
+        ...state,
+        cart: state.cart.filter(
+          (item) => item.id !== action.payload
+        ),
+        loading: false,
+      };
+    case ADD_CART:
+      return {
+        ...state,
+        cart: [action.payload, ...state.cart],
         loading: false,
       };
     default:

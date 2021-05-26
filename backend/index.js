@@ -53,9 +53,9 @@ app.get('/items/download/:itemId', downloadItem);
 app.get('/items/user/:userhandle', getUserItems);
 
 //cart routes
-app.post('/cart/:itemId', insertItemToCart);
-app.get('/cart', getCart);
-app.delete('/cart/:itemId', deleteItemFromCart);
+app.post('/cart/:itemId', FBAuth, insertItemToCart);
+app.get('/cart', FBAuth, getCart);
+app.delete('/cart/:itemId', FBAuth, deleteItemFromCart);
 
 //favorites routes
 app.post('/favorites/:itemId', FBAuth, addFavorites);

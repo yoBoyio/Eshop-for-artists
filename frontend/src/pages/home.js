@@ -12,7 +12,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 //components
 import Profile from "../components/Profile";
 import { getItems } from "../redux/actions/dataActions";
-import { getFavorites } from '../redux/actions/dataActions'
+import { getFavorites, getCart } from '../redux/actions/dataActions'
 
 import BeatsCard from "../components/BeatsCard";
 //home page get data from api using axios
@@ -35,8 +35,8 @@ const styles = {
 class home extends Component {
   componentDidMount() {
     this.setState(this.props.getItems());
-    // if (this.props.handle)
-    // this.props.getFavorites(this.props.handle)
+    this.props.getFavorites()
+    this.props.getCart()
   }
 
   render() {
@@ -80,7 +80,7 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
   getItems,
-  getFavorites
+  getFavorites, getCart
 };
 
 home.propTypes = {

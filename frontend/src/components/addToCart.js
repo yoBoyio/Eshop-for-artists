@@ -1,32 +1,29 @@
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import React, { useEffect, useState } from "react";
 import IconButton from "@material-ui/core/IconButton";
-// import "../styles/favorites.css";
 import { connect } from "react-redux";
-import { addFavorites, deleteFavorites } from '../redux/actions/dataActions'
-import RemoveIcon from '@material-ui/icons/Remove';
-import AddIcon from "@material-ui/icons/Add";
+import { addCart, deleteCart } from '../redux/actions/dataActions'
 import MyButton from "../util/MyButton";
 
 export function AddToList({
     credentials,
     itemId,
-    favorites,
-    addFavorites,
-    deleteFavorites,
+    cart,
+    addCart,
+    deleteCart,
     authenticated,
     handle
 }) {
     const [added, setAdded] = useState(false);
-    const [favoriteAction, setFavoriteAction] = useState(false);
+    const [cartAction, setCartAction] = useState(false);
 
     useEffect(() => {
         //check if item is on watchlist
         if (authenticated) {
-            if (favorites) {
-                favorites.map((item) => {
-                    if (itemId === item.itemId && !favoriteAction) {
+            if (cart) {
+                cart.map((item) => {
+                    if (itemId === item.itemId && !cartAction) {
                         setAdded(true);
                     }
                 });
@@ -40,24 +37,22 @@ export function AddToList({
         if (authenticated) {
             //doesnt exists on watchlist
             if (!added) {
-                addFavorites(itemId);
+                addCart(itemId);
                 setAdded(true);
             } else if (added) {
-                deleteFavorites(itemId)
+                deleteCart(itemId)
                 setAdded(false);
-                setFavoriteAction(true);
+                setCartAction(true);
             }
         }
     };
 
-    // const icon = added ? <FavoriteIcon /> : <FavoriteBorderIcon />;
-    const icon = added ? <RemoveIcon /> : <AddIcon />;
+    const icon = added ? <RemoveShoppingCartIcon /> : <ShoppingCartIcon />;
 
     const body = (
         <div className="">
             <MyButton
-                tip={added ? 'Remove from favorites' : "Add to favorites"}
-
+                tip={!added ? 'Add to cart ' : "Remove from cart"}
                 edge="end"
                 aria-haspopup="true"
                 color="inherit"
@@ -76,9 +71,9 @@ const mapStateToProps = (state) => ({
     handle: state.user.credentials.handle,
     authenticated: state.user.authenticated,
     UI: state.UI,
-    favorites: state.data.favorites,
+    cart: state.data.cart,
 });
 
-export default connect(mapStateToProps, { addFavorites, deleteFavorites })(
+export default connect(mapStateToProps, { addCart, deleteCart })(
     AddToList
 );

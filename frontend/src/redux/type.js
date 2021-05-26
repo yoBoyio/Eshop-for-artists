@@ -18,3 +18,6 @@ export const UPLOAD_ITEM = 'UPLOAD_ITEM';
 export const DELETE_FAVORITES = 'DELETE_FAVORITES';
 export const ADD_FAVORITES = 'ADD_FAVORITES';
 export const GET_FAVORITES = 'GET_FAVORITES';
+export const DELETE_CART = 'DELETE_CART';
+export const ADD_CART = 'ADD_CART';
+export const GET_CART = 'GET_CART';
