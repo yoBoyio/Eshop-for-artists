@@ -30,7 +30,8 @@ export const getFavorites = () => (dispatch) => {
       dispatch({
         type: SET_ERRORS,
         payload: err.response.data,
-      }));
+      })
+    );
 };
 
 export const addFavorites = (itemId, handle) => (dispatch) => {
@@ -46,11 +47,11 @@ export const addFavorites = (itemId, handle) => (dispatch) => {
       )
     )
     .catch((err) => {
-      dispatch({ type: STOP_LOADING_UI })
+      dispatch({ type: STOP_LOADING_UI });
       dispatch({
         type: SET_ERRORS,
         payload: err.response.data,
-      })
+      });
     });
 };
 
@@ -65,15 +66,15 @@ export const deleteFavorites = (itemId) => (dispatch, getState) => {
       dispatch({
         type: DELETE_FAVORITES,
         payload: itemId,
-      })
-      dispatch({ type: STOP_LOADING_UI })
+      });
+      dispatch({ type: STOP_LOADING_UI });
     })
     .catch((err) => {
-      dispatch({ type: STOP_LOADING_UI })
+      dispatch({ type: STOP_LOADING_UI });
       dispatch({
         type: SET_ERRORS,
         payload: err.response.data,
-      })
+      });
     });
 };
 //cart
@@ -223,4 +224,5 @@ const setAuthorizationHeader = () => {
   const FBIdToken = localStorage.getItem("FBidToken");
 
   api.defaults.headers.common["Authorization"] = FBIdToken;
+  api.defaults.headers.common["Content-Type"] = "application/json";
 };
