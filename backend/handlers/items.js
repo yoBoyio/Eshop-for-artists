@@ -158,6 +158,7 @@ exports.getItems = (req, res) => {
           title: doc.data().title,
           views: doc.data().views,
           userHandle: doc.data().userHandle,
+          freeDownload: doc.data().freeDownload
         });
       });
       return res.send(items);
@@ -312,9 +313,12 @@ exports.getItem = (req, res) => {
         .doc(req.params.itemId)
         .update({ views: itemData.views + 1 })
         .then((doc) => {
-          itemData = doc.data();
-          itemData.itemId = doc.id;
-          return res.send(itemData);
+          if (data.exists) {
+
+            itemData = doc.data();
+            itemData.itemId = doc.id;
+            return res.send(itemData);
+          }
         })
         .catch((err) => {
           console.error(err);
@@ -458,9 +462,10 @@ exports.getUserItems = (req, res) => {
           path: doc.data().path,
           price: doc.data().price,
           tags: doc.data().tags,
-          title: doc.data().tags,
+          title: doc.data().title,
           views: doc.data().views,
           userHandle: doc.data().userHandle,
+          freeDownload: doc.data().freeDownload
         });
       });
       return res.send(items);

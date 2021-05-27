@@ -7,7 +7,6 @@ const firebase = require('firebase');
 
 
 exports.getCart = (req, res) => {
-    // console.log(req.body.handle)
 
     let retItems = [];
 
@@ -17,7 +16,6 @@ exports.getCart = (req, res) => {
             if (data.docs == null) {
                 return res.status(404).json({ Message: 'User Has no cart' })
             }
-
             data.forEach((doc) => {
                 CartData = doc.data();
                 CartData.CartId = doc.id;
@@ -30,10 +28,8 @@ exports.getCart = (req, res) => {
                 CartData.items.map((item) => {
                     db.collection('item').doc(item).get()
                         .then(doc => {
-                            if (!doc.exists)
-                                retItems.push("Not Found");
-                            else
-                                // retItems.push(doc.data());
+
+                            if (doc.exists) {
                                 retItems.push({
                                     itemId: doc.id,
                                     createdAt: doc.data().createdAt,
@@ -45,14 +41,15 @@ exports.getCart = (req, res) => {
                                     tags: doc.data().tags,
                                     title: doc.data().title,
                                     views: doc.data().views,
-                                    userHandle: doc.data().userHandle
-
+                                    userHandle: doc.data().userHandle,
+                                    freeDownload: doc.data().freeDownload
                                 });
-                            itemsProcessed++;
 
+                            }
+                            itemsProcessed++;
                             if (itemsProcessed === CartData.items.length) {
                                 CartData.items = retItems;
-                                return res.json(CartData);
+                                res.json(CartData);
                             }
                         });
 

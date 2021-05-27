@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
@@ -8,14 +8,16 @@ import Typography from "@material-ui/core/Typography";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import Genres from "./Genres";
-import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import GetAppIcon from "@material-ui/icons/GetApp";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import MyButton from "../util/MyButton";
 import Favorites from "./addToFavorites";
 import Cart from "./addToCart";
 
 import Chip from "@material-ui/core/Chip";
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import { connect } from "react-redux";
+
+import MyButton from "../util/MyButton";
+import AuthModal from './isAuth'
 //styles
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BeatsCard = ({ item }) => {
+const BeatsCard = ({ item, authenticated }) => {
   const classes = useStyles();
   const theme = useTheme();
   const [selectedGenres, setSelectedGenres] = useState([]);
@@ -70,17 +72,35 @@ const BeatsCard = ({ item }) => {
           <Genres genres={item.genre} />
           {item.tags && item.tags.length > 0
             ? item.tags &&
-              item.tags.map((tag) => <Chip size="small" label={`#${tag}`} />)
+            item.tags.map((tag) => <Chip size="small" label={`#${tag}`} />)
             : null}
         </CardContent>
         <div style={{ display: "flex" }}>
-          <Favorites itemId={item.itemId} />
-          <Cart itemId={item.itemId} />
-          <MyButton tip="Like" style={{ paddingLeft: "1px" }}>
+
+          {/* if auth add to favorites */}
+          {authenticated ?
+            <Favorites itemId={item.itemId} />
+            :
+            (<AuthModal>
+              <Favorites itemId={item.itemId} />
+            </AuthModal>
+            )}
+          {/* if auth add to cart */}
+
+          {authenticated ? (
+            <Cart itemId={item.itemId} />
+          )
+            :
+            (<AuthModal>
+              <Cart itemId={item.itemId} />
+            </AuthModal>
+            )}
+
+          <MyButton tip='Like' style={{ paddingLeft: "1px" }}>
             <FavoriteBorderIcon itemID={item.itemId} />
           </MyButton>
-          {item.freeDownload && item.freeDownload ? (
-            <MyButton tip="download">
+          {item.freeDownload === 'true' ? (
+            <MyButton tip='download'>
               <GetAppIcon itemID={item.itemId} />
             </MyButton>
           ) : null}
@@ -117,5 +137,10 @@ const BeatsCard = ({ item }) => {
 
   return <div>{displayItem}</div>;
 };
+const mapStateToProps = (state) => ({
+  user: state.user,
+  authenticated: state.user.authenticated,
+});
 
-export default BeatsCard;
+export default connect(mapStateToProps, null)(BeatsCard);
+
