@@ -8,11 +8,12 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
+import Chip from "@material-ui/core/Chip";
 
 //components
 import Profile from "../components/Profile";
 import { getItems } from "../redux/actions/dataActions";
-import { getFavorites, getCart } from '../redux/actions/dataActions'
+import { getFavorites, getCart } from "../redux/actions/dataActions";
 
 import BeatsCard from "../components/BeatsCard";
 //home page get data from api using axios
@@ -35,24 +36,42 @@ const styles = {
 class home extends Component {
   componentDidMount() {
     this.setState(this.props.getItems());
-    this.props.getFavorites()
-    this.props.getCart()
+    this.props.getFavorites();
+    this.props.getCart();
   }
 
   render() {
     const { items, loading } = this.props.data;
     const { authenticated } = this.props.user;
-    const { classes } = this.props
+    const genres = [
+      { id: 1, text: "Pop" },
+      { id: 2, text: "Rap" },
+      { id: 3, text: "Rock" },
+      { id: 4, text: "Trap" },
+      { id: 5, text: "Metal" },
+      { id: 6, text: "Electronic" },
+      { id: 7, text: "Jazz" },
+    ];
+
+    const { classes } = this.props;
     const displayItems =
       items && items.length > 0 ? (
         items.map((item) => <BeatsCard key={item.itemId} item={item} />)
       ) : (
         <BeatsCard items={false} />
       );
+    const displayGemres = genres.map((g) => (
+      <Chip
+        size="medium"
+        label={g.text}
+        clickable
+        onClick={() => console.log("PRESSED")}
+      />
+    ));
 
     return (
-      <Grid container spacing={10}>
-        <Grid item sm={8} xs={12}>
+      <Grid container spacing={10} justify="space-between">
+        <Grid item sm={4} xs={10}>
           {authenticated && (
             <Card className={classes.card}>
               <CardContent className={classes.content}>
@@ -63,7 +82,24 @@ class home extends Component {
 
           {displayItems}
         </Grid>
-        <Grid item sm={4} xs={12}>
+        <Grid item sm={4.2} xs={3}>
+          <Card className={classes.card}>
+            <CardContent className={classes.content} style={{ marginLeft: 0 }}>
+              <Typography variant="h2">Genres</Typography>
+              {/* <div>{displayGemres}</div> */}
+              <Grid
+                container
+                direction="row"
+                justify="space-around"
+                alignItems="center"
+              >
+                {displayGemres}
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item sm={4} xs={4} alignItems="flex-end">
           <Profile />
         </Grid>
       </Grid>
@@ -80,7 +116,8 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
   getItems,
-  getFavorites, getCart
+  getFavorites,
+  getCart,
 };
 
 home.propTypes = {
@@ -89,7 +126,6 @@ home.propTypes = {
   user: PropTypes.object.isRequired,
   handle: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-
 };
 
 export default connect(

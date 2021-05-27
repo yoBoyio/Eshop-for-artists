@@ -10,19 +10,19 @@ import "react-h5-audio-player/lib/styles.css";
 import Genres from "./Genres";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import GetAppIcon from "@material-ui/icons/GetApp";
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import MyButton from "../util/MyButton";
 import Favorites from "./addToFavorites";
 import Cart from "./addToCart";
 
+import Chip from "@material-ui/core/Chip";
 //styles
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     paddingBottom: "35px",
     margin: "13px",
-    width: "515px",
+    width: "auto",
   },
   details: {
     display: "flex",
@@ -32,8 +32,8 @@ const useStyles = makeStyles((theme) => ({
     flex: "1 0 auto",
   },
   cover: {
-    width: "180px",
-    height: "180px",
+    width: "185px",
+    height: "300px",
   },
   controls: {
     display: "flex",
@@ -66,24 +66,21 @@ const BeatsCard = ({ item }) => {
           <Typography variant="subtitle1" color="textSecondary">
             {item.price} €
           </Typography>
-          {/* {item.tags && (
-            <Genres
-              itemIds={item.genre}
-              selectedGenres={selectedGenres}
-              setSelectedGenres={setSelectedGenres}
-              genres={genres}
-              setGenres={setGenres}
-            />
-          )} */}
+
+          <Genres genres={item.genre} />
+          {item.tags && item.tags.length > 0
+            ? item.tags &&
+              item.tags.map((tag) => <Chip size="small" label={`#${tag}`} />)
+            : null}
         </CardContent>
         <div style={{ display: "flex" }}>
           <Favorites itemId={item.itemId} />
           <Cart itemId={item.itemId} />
-          <MyButton tip='Like' style={{ paddingLeft: "1px" }}>
+          <MyButton tip="Like" style={{ paddingLeft: "1px" }}>
             <FavoriteBorderIcon itemID={item.itemId} />
           </MyButton>
           {item.freeDownload && item.freeDownload ? (
-            <MyButton tip='download'>
+            <MyButton tip="download">
               <GetAppIcon itemID={item.itemId} />
             </MyButton>
           ) : null}
@@ -101,11 +98,13 @@ const BeatsCard = ({ item }) => {
           </IconButton>
         </div>
       </div>
-      <CardMedia
-        className={classes.cover}
-        image={item.imgPath}
-        title="Live from space album cover"
-      />
+      <div>
+        <CardMedia
+          className={classes.cover}
+          image={item.imgPath}
+          title="Live from space album cover"
+        />
+      </div>
     </Card>
   ) : (
     <Card className={classes.card}>
