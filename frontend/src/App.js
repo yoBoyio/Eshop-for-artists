@@ -27,6 +27,7 @@ import cart from "./pages/cart";
 import Navbar from "./components/Navbar";
 import AuthRoute from "./util/AuthRoute";
 import { api } from "./axiosConfigs";
+import Checkout from "./pages/checkout";
 
 const theme = createMuiTheme(themeFile);
 
@@ -42,8 +43,8 @@ if (token) {
     store.dispatch({ type: SET_AUTHENTICATED });
     api.defaults.headers.common["Authorization"] = token;
     store.dispatch(getUserData());
-    // store.dispatch(getFavorites());
-    // store.dispatch(getCart());
+    store.dispatch(getFavorites());
+    store.dispatch(getCart());
   }
 }
 
@@ -62,6 +63,7 @@ function App() {
               <Route exact path="/search" component={search} />
               <Route exact path="/favorites" component={favorites} />
               <Route exact path="/cart" component={cart} />
+              <Route exact path="/checkout" component={Checkout} />
             </Switch>
           </div>
         </Router>

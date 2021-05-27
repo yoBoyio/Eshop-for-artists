@@ -79,7 +79,7 @@ export const deleteFavorites = (itemId) => (dispatch, getState) => {
 };
 //cart
 export const getCart = () => (dispatch) => {
-  setAuthorizationHeader();
+  // setAuthorizationHeader();
   api
     .get(`/cart`)
     .then((res) =>
@@ -103,9 +103,9 @@ export const addCart = (itemId) => (dispatch) => {
   api
     .post(`/cart/${itemId}`)
     .then((res) =>
-      dispatch(dispatch(
+      dispatch(
         getItem(itemId, ADD_CART)
-      ))
+      )
     )
     .catch((err) => {
       dispatch({ type: STOP_LOADING_UI })

@@ -26,6 +26,7 @@ export function AddToList({
         if (authenticated) {
             if (favorites) {
                 favorites.map((item) => {
+                    console.log(item)
                     if (itemId === item.itemId && !favoriteAction) {
                         setAdded(true);
                     }

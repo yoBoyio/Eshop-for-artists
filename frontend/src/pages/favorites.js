@@ -7,7 +7,7 @@ import BeatsCard from "../components/BeatsCard";
 export const Favorites = ({ handle, favorites, authenticated, getFavorites }) => {
 
   // useEffect(() => {
-  //   getFavorites(handle)
+  //   getFavorites()
   // }, [])
 
   const notlogged = !authenticated ? (

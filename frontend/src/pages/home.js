@@ -36,8 +36,8 @@ const styles = {
 class home extends Component {
   componentDidMount() {
     this.setState(this.props.getItems());
-    this.props.getFavorites();
-    this.props.getCart();
+    // this.props.getFavorites();
+    // this.props.getCart();
   }
 
   render() {

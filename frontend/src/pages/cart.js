@@ -3,9 +3,43 @@ import { connect } from "react-redux";
 import "../styles/favorites.css";
 import { getItems } from '../redux/actions/dataActions'
 import BeatsCard from "../components/BeatsCard";
+import { Link } from 'react-router-dom';
+import MyButton from "../util/MyButton";
+import { makeStyles } from "@material-ui/core/styles";
+import { Button } from "@material-ui/core";
+import { getCart } from '../redux/actions/dataActions'
+
+const useStyles = makeStyles((theme) => ({
+  modal: {
+    display: "flex",
+    position: 'relative',
+    alignItems: "center",
+    justifyContent: "center",
+    color: "#000"
+  },
+  paper: {
+    width: "30%",
+    height: "20%",
+    backgroundColor: "#141414",
+    border: "1px solid #282c34",
+    borderRadius: 3,
+    color: "white",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(1, 1, 3),
+  },
+  submit: {
+    marginTop: '100px',
+    width: 'auto',
+    margin: theme.spacing(3, 0, 2),
+  },
+
+}));
 
 export const Cart = ({ handle, cart, authenticated, getItems }) => {
-
+  const classes = useStyles();
+  // useEffect(() => {
+  //   getCart()
+  // }, [])
   const notlogged = !authenticated ? (
     <h2 className="no-movies">Not a member</h2>
   ) : null;
@@ -29,7 +63,15 @@ export const Cart = ({ handle, cart, authenticated, getItems }) => {
           )}
         </div>
       ) : null}
-
+      {cart.length > 0 ? <Button
+        fullWidth
+        variant="contained"
+        color="primary" className={classes.submit}
+        component={Link} to="/checkout">
+        Checkout
+        </Button>
+        :
+        null}
       {authenticated && cart === 0 ? (
         <h2 className="no-movies">
           <br></br>No items in your Cart! Add some!

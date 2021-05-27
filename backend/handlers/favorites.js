@@ -51,7 +51,6 @@ exports.addFavorites = (req, res) => {
         });
 }
 exports.getFavorites = (req, res) => {
-    console.log(req.user)
     let retFavorites = [];
     db.collection('favorites').where("userHandle", "==", req.user.handle).get()
         .then(data => {
@@ -60,22 +59,20 @@ exports.getFavorites = (req, res) => {
             }
 
             data.forEach((doc) => {
+
                 FavoritesData = doc.data();
                 FavoritesData.favorite_id = doc.id;
                 // FavoritesData.items.push(rffe)
-
                 if (FavoritesData.items.length == 0) {
                     return res.json(FavoritesData);
                 }
 
-                itemsProcessed = 0;
+                let itemsProcessed = 0;
 
                 FavoritesData.items.map((item) => {
                     db.collection('item').doc(item).get()
                         .then(doc => {
-                            if (!doc.exists)
-                                retFavorites.push("Not Found");
-                            else
+                            if (doc.exists) {
 
                                 retFavorites.push({
                                     itemId: doc.id,
@@ -88,17 +85,15 @@ exports.getFavorites = (req, res) => {
                                     tags: doc.data().tags,
                                     title: doc.data().title,
                                     views: doc.data().views,
-                                    userHandle: doc.data().userHandle
-
+                                    userHandle: doc.data().userHandle,
+                                    freeDownload: doc.data().freeDownload
                                 });
-                            // retFavorites.items.push(doc.id);
 
-                            // retFavorites.push(doc.id);
+                            }
                             itemsProcessed++;
-
                             if (itemsProcessed === FavoritesData.items.length) {
                                 FavoritesData.items = retFavorites;
-                                res.json(FavoritesData);
+                                return res.json(FavoritesData);
                             }
                         });
 
