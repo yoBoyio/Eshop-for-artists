@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
@@ -13,11 +13,13 @@ import Favorites from "./addToFavorites";
 import Cart from "./addToCart";
 
 import Chip from "@material-ui/core/Chip";
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import { connect } from "react-redux";
-
+//actions
+import { downloadItem } from "../redux/actions/dataActions";
+//
 import MyButton from "../util/MyButton";
-import AuthModal from './isAuth'
+import AuthModal from "./isAuth";
 //styles
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,11 +51,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BeatsCard = ({ item, authenticated }) => {
+const BeatsCard = ({ item, authenticated, downloadItem, download }) => {
   const classes = useStyles();
   const theme = useTheme();
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [genres, setGenres] = useState([]);
+
+  const handleDownload = (itemID, Title) => {
+    downloadItem(itemID, Title);
+  };
 
   const displayItem = item ? (
     <Card className={classes.root}>
@@ -72,36 +78,37 @@ const BeatsCard = ({ item, authenticated }) => {
           <Genres genres={item.genre} />
           {item.tags && item.tags.length > 0
             ? item.tags &&
-            item.tags.map((tag) => <Chip size="small" label={`#${tag}`} />)
+              item.tags.map((tag) => <Chip size="small" label={`#${tag}`} />)
             : null}
         </CardContent>
         <div style={{ display: "flex" }}>
-
           {/* if auth add to favorites */}
-          {authenticated ?
+          {authenticated ? (
             <Favorites itemId={item.itemId} />
-            :
-            (<AuthModal>
+          ) : (
+            <AuthModal>
               <Favorites itemId={item.itemId} />
             </AuthModal>
-            )}
+          )}
           {/* if auth add to cart */}
 
           {authenticated ? (
             <Cart itemId={item.itemId} />
-          )
-            :
-            (<AuthModal>
+          ) : (
+            <AuthModal>
               <Cart itemId={item.itemId} />
             </AuthModal>
-            )}
+          )}
 
-          <MyButton tip='Like' style={{ paddingLeft: "1px" }}>
+          <MyButton tip="Like" style={{ paddingLeft: "1px" }}>
             <FavoriteBorderIcon itemID={item.itemId} />
           </MyButton>
-          {item.freeDownload === 'true' ? (
-            <MyButton tip='download'>
-              <GetAppIcon itemID={item.itemId} />
+          {item.freeDownload === "true" ? (
+            <MyButton tip="Download Now" style={{ paddingLeft: "1px" }}>
+              <GetAppIcon
+                itemID={item.itemId}
+                onClick={() => handleDownload(item.itemId, item.title)}
+              />
             </MyButton>
           ) : null}
         </div>
@@ -142,5 +149,4 @@ const mapStateToProps = (state) => ({
   authenticated: state.user.authenticated,
 });
 
-export default connect(mapStateToProps, null)(BeatsCard);
-
+export default connect(mapStateToProps, { downloadItem })(BeatsCard);

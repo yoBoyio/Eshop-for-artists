@@ -1,66 +1,97 @@
-const express = require('express')
+const express = require("express");
 const app = express();
-const cors = require('cors')
+const cors = require("cors");
 
-
-const FBAuth = require('./util/fbAuth');
-const fileUpload = require('express-fileupload');
+const FBAuth = require("./util/fbAuth");
+const fileUpload = require("express-fileupload");
 
 const port = parseInt(process.env.PORT, 10) || 4000;
 
+const {
+  signup,
+  login,
+  getAuthenticatedUser,
+  uploadImage,
+  addUserDetails,
+} = require("./handlers/users");
+const { getAllTests } = require("./handlers/test");
+const {
+  getAllPosts,
+  getPost,
+  postOnePost,
+  likePost,
+  unlikePost,
+  deletePost,
+  commentOnPost,
+} = require("./handlers/posts");
+const {
+  insertItem,
+  discoverItems,
+  getItem,
+  updateItem,
+  addViews,
+  deleteItem,
+  getItems,
+  ItemsQuery,
+  downloadItem,
+  getUserItems,
+} = require("./handlers/items");
+const { db } = require("./util/admin");
+const {
+  insertItemToCart,
+  getCart,
+  deleteItemFromCart,
+} = require("./handlers/cart");
+const {
+  addFavorites,
+  getFavorites,
+  deleteFavorites,
+} = require("./handlers/favorites");
 
-const { signup, login, getAuthenticatedUser, uploadImage, addUserDetails } = require('./handlers/users');
-const { getAllTests } = require('./handlers/test');
-const { getAllPosts, getPost, postOnePost, likePost, unlikePost, deletePost, commentOnPost } = require('./handlers/posts');
-const { insertItem, discoverItems, getItem, updateItem, addViews, deleteItem, getItems, ItemsQuery, downloadItem, getUserItems } = require('./handlers/items');
-const { db } = require('./util/admin');
-const { insertItemToCart, getCart, deleteItemFromCart } = require('./handlers/cart');
-const { addFavorites, getFavorites, deleteFavorites } = require('./handlers/favorites')
-
-//middlwares 
+//middlwares
 app.use(express.json());
-app.use(cors())
+app.use(cors());
 app.use(fileUpload());
 
 //test routes
-app.get('/test', getAllTests);
+app.get("/test", getAllTests);
 
 //users routes
-app.post('/signup', signup);
-app.post('/login', login);
-app.get('/user', FBAuth, getAuthenticatedUser);
-app.post('/user/image', FBAuth, uploadImage);
-app.post('/user', FBAuth, addUserDetails);
+app.post("/signup", signup);
+app.post("/login", login);
+app.get("/user", FBAuth, getAuthenticatedUser);
+app.post("/user/image", FBAuth, uploadImage);
+app.post("/user", FBAuth, addUserDetails);
 
 // posts routes
-app.get('/posts', FBAuth, getAllPosts);
-app.post('/posts', FBAuth, postOnePost);
-app.get('/post/:postId', getPost);
-app.delete('/post/:postId', FBAuth, deletePost);
-app.get('post/:postId/like', FBAuth, likePost);
-app.get('post/:postId/unlike', FBAuth, unlikePost);
-app.post('post/:postId/comment', FBAuth, commentOnPost);
+app.get("/posts", FBAuth, getAllPosts);
+app.post("/posts", FBAuth, postOnePost);
+app.get("/post/:postId", getPost);
+app.delete("/post/:postId", FBAuth, deletePost);
+app.get("post/:postId/like", FBAuth, likePost);
+app.get("post/:postId/unlike", FBAuth, unlikePost);
+app.post("post/:postId/comment", FBAuth, commentOnPost);
 
 // Item routes
-app.post('/items', FBAuth, insertItem);
-app.get('/items/discover', discoverItems);
-app.get('/items/search/:query', ItemsQuery);
-app.get('/items', getItems);
-app.get('/items/:itemId', getItem);
-app.post('/items/:itemId', FBAuth, updateItem);
-app.delete('/items/:itemId', deleteItem);
-app.get('/items/download/:itemId', downloadItem);
-app.get('/items/user/:userhandle', getUserItems);
+app.post("/items", FBAuth, insertItem);
+app.get("/items/discover", discoverItems);
+app.get("/items/search/:query", ItemsQuery);
+app.get("/items", getItems);
+app.get("/items/:itemId", getItem);
+app.post("/items/:itemId", FBAuth, updateItem);
+app.delete("/items/:itemId", deleteItem);
+app.get("/items/download/:itemId", FBAuth, downloadItem);
+app.get("/items/user/:userhandle", getUserItems);
 
 //cart routes
-app.post('/cart/:itemId', FBAuth, insertItemToCart);
-app.get('/cart', FBAuth, getCart);
-app.delete('/cart/:itemId', FBAuth, deleteItemFromCart);
+app.post("/cart/:itemId", FBAuth, insertItemToCart);
+app.get("/cart", FBAuth, getCart);
+app.delete("/cart/:itemId", FBAuth, deleteItemFromCart);
 
 //favorites routes
-app.post('/favorites/:itemId', FBAuth, addFavorites);
-app.get('/favorites', FBAuth, getFavorites);
-app.delete('/favorites/:itemId', FBAuth, deleteFavorites);
+app.post("/favorites/:itemId", FBAuth, addFavorites);
+app.get("/favorites", FBAuth, getFavorites);
+app.delete("/favorites/:itemId", FBAuth, deleteFavorites);
 
 // DB Triggers
 // exports.createNotificationOnLike = functions.region('europe-west1').firestore.document('likes/{id}')
@@ -150,10 +181,10 @@ app.delete('/favorites/:itemId', FBAuth, deleteFavorites);
 //     }).catch( err => console.error(err) );
 //   })
 
-
 // app.set('port', port);
 
 // gameServer.listen(port);
 
 app.listen(port, () =>
-    console.log(`Server listening http://localhost:${port}`));
+  console.log(`Server listening http://localhost:${port}`)
+);

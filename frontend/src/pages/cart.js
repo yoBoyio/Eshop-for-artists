@@ -1,21 +1,21 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import "../styles/favorites.css";
-import { getItems } from '../redux/actions/dataActions'
+import { getItems } from "../redux/actions/dataActions";
 import BeatsCard from "../components/BeatsCard";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import MyButton from "../util/MyButton";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
-import { getCart } from '../redux/actions/dataActions'
+import { getCart } from "../redux/actions/dataActions";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
-    position: 'relative',
+    position: "relative",
     alignItems: "center",
     justifyContent: "center",
-    color: "#000"
+    color: "#000",
   },
   paper: {
     width: "30%",
@@ -28,11 +28,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1, 1, 3),
   },
   submit: {
-    marginTop: '100px',
-    width: 'auto',
+    marginLeft: "20px",
     margin: theme.spacing(3, 0, 2),
   },
-
 }));
 
 export const Cart = ({ handle, cart, authenticated, getItems }) => {
@@ -52,6 +50,20 @@ export const Cart = ({ handle, cart, authenticated, getItems }) => {
         <span className="count-pill">
           {cart.length} {cart.length === 1 ? "Item" : "Items"}
         </span>
+        <div>
+          {cart.length > 0 ? (
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              component={Link}
+              to="/checkout"
+            >
+              Checkout
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       {authenticated && cart.length > 0 ? (
@@ -63,15 +75,7 @@ export const Cart = ({ handle, cart, authenticated, getItems }) => {
           )}
         </div>
       ) : null}
-      {cart.length > 0 ? <Button
-        fullWidth
-        variant="contained"
-        color="primary" className={classes.submit}
-        component={Link} to="/checkout">
-        Checkout
-        </Button>
-        :
-        null}
+
       {authenticated && cart === 0 ? (
         <h2 className="no-movies">
           <br></br>No items in your Cart! Add some!

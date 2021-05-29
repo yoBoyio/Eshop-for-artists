@@ -1,4 +1,5 @@
 import { api } from "../../axiosConfigs";
+
 import {
   SET_ITEMS,
   LOADING_UI,
@@ -12,7 +13,8 @@ import {
   GET_FAVORITES,
   DELETE_CART,
   ADD_CART,
-  GET_CART
+  GET_CART,
+  DOWNLOAD_ITEM,
 } from "../type";
 
 //favorites
@@ -41,11 +43,7 @@ export const addFavorites = (itemId, handle) => (dispatch) => {
 
   api
     .post(`/favorites/${itemId}`)
-    .then((res) =>
-      dispatch(
-        getItem(itemId, ADD_FAVORITES)
-      )
-    )
+    .then((res) => dispatch(getItem(itemId, ADD_FAVORITES)))
     .catch((err) => {
       dispatch({ type: STOP_LOADING_UI });
       dispatch({
@@ -92,7 +90,8 @@ export const getCart = () => (dispatch) => {
       dispatch({
         type: SET_ERRORS,
         payload: err.response.data,
-      }));
+      })
+    );
 };
 
 export const addCart = (itemId) => (dispatch) => {
@@ -102,17 +101,13 @@ export const addCart = (itemId) => (dispatch) => {
 
   api
     .post(`/cart/${itemId}`)
-    .then((res) =>
-      dispatch(
-        getItem(itemId, ADD_CART)
-      )
-    )
+    .then((res) => dispatch(getItem(itemId, ADD_CART)))
     .catch((err) => {
-      dispatch({ type: STOP_LOADING_UI })
+      dispatch({ type: STOP_LOADING_UI });
       dispatch({
         type: SET_ERRORS,
         payload: err.response.data,
-      })
+      });
     });
 };
 
@@ -127,15 +122,15 @@ export const deleteCart = (itemId) => (dispatch, getState) => {
       dispatch({
         type: DELETE_CART,
         payload: itemId,
-      })
-      dispatch({ type: STOP_LOADING_UI })
+      });
+      dispatch({ type: STOP_LOADING_UI });
     })
     .catch((err) => {
-      dispatch({ type: STOP_LOADING_UI })
+      dispatch({ type: STOP_LOADING_UI });
       dispatch({
         type: SET_ERRORS,
         payload: err.response.data,
-      })
+      });
     });
 };
 
@@ -195,6 +190,23 @@ export const searchRelated = (query) => (dispatch) => {
       });
     });
 };
+
+//download item
+export const downloadItem = (id, title) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  api
+    .get(`/items/download/${id}`)
+    .then((res) => {
+      window.open(res.data, "_blank");
+    })
+    .catch((err) => {
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data,
+      });
+    });
+};
+
 //upload item
 export const uploadItem = (item) => (dispatch) => {
   dispatch({ type: LOADING_UI });
