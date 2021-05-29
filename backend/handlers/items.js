@@ -158,7 +158,7 @@ exports.getItems = (req, res) => {
           title: doc.data().title,
           views: doc.data().views,
           userHandle: doc.data().userHandle,
-          freeDownload: doc.data().freeDownload
+          freeDownload: doc.data().freeDownload,
         });
       });
       return res.send(items);
@@ -314,7 +314,6 @@ exports.getItem = (req, res) => {
         .update({ views: itemData.views + 1 })
         .then((doc) => {
           if (data.exists) {
-
             itemData = doc.data();
             itemData.itemId = doc.id;
             return res.send(itemData);
@@ -430,7 +429,7 @@ exports.downloadItem = (req, res) => {
         ""
       );
       file = file.replace("?alt=media", "");
-
+      console.log("DOWNLAOD BACKEND");
       const [metadata] = await admin
         .storage()
         .bucket("score4-aa163.appspot.com")
@@ -465,7 +464,7 @@ exports.getUserItems = (req, res) => {
           title: doc.data().title,
           views: doc.data().views,
           userHandle: doc.data().userHandle,
-          freeDownload: doc.data().freeDownload
+          freeDownload: doc.data().freeDownload,
         });
       });
       return res.send(items);

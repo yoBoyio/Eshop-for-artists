@@ -38,7 +38,6 @@ const Genres = ({
 
   return (
     <div className={classes.genres_area} style={{ padding: "6px 0" }}>
-      {console.log(genres)}
       {selectedGenres &&
         selectedGenres.map((genre) => (
           <Chip
