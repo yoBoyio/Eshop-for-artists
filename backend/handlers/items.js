@@ -48,96 +48,70 @@ exports.ItemsQuery = (req, res) => {
     });
 };
 exports.discoverItems = (req, res) => {
-  let page = 0;
-  let sortby = "views";
-  let BPMstart = 0;
-  let BPMend = 300;
-  let type = "desc";
+    let sortby = "views";
+    let type = "desc";
 
-  if (req.body.page != null || req.body.page > 0) {
-    page = req.body.page;
-  }
+    if (req.body.page != null || req.body.page > 0) {
+        page = req.body.page;
+    }
 
-  if (req.body.sortby != null) {
-    sortby = req.body.sortby;
-  }
-  if (req.body.BPMstart != null) {
-    BPMstart = req.body.BPMstart;
-  }
+    if (req.body.sortby != null) {
+        sortby = req.body.sortby;
+    }
 
-  if (req.body.BPMend != null) {
-    BPMend = req.body.BPMend;
-  }
+    if (sortby === "high" || sortby === "low") {
+        sortby = "price";
+        if (req.body.sortby === "low")
+            type = "asc";
+    }
 
-  if (sortby === "high" || sortby === "low") {
-    sortby = "price";
-    if (req.body.sortby === "low") type = "asc";
-  }
-
-  if (req.body.genre != null)
-    db.collection("item")
-      .orderBy("BPM", "asc")
-      .where("BPM", ">=", BPMstart)
-      .where("BPM", "<=", BPMend)
-      .where("genre", "array-contains", req.body.genre)
-      .orderBy(sortby, type)
-      .limit(40)
-      .offset(page * 40)
-      .get()
-      .then((data) => {
-        let items = [];
-        data.forEach((doc) => {
-          items.push({
-            itemId: doc.id,
-            createdAt: doc.data().createdAt,
-            BPM: doc.data().BPM,
-            genre: doc.data().genre,
-            imgPath: doc.data().imgPath,
-            path: doc.data().path,
-            price: doc.data().price,
-            tags: doc.data().tags,
-            title: doc.data().tags,
-            views: doc.data().views,
-            userHandle: doc.data().userHandle,
-          });
-        });
-        return res.send(items);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).json({ error: err.code });
-      });
-  else
-    db.collection("item")
-      .orderBy("BPM")
-      .where("BPM", ">=", BPMstart)
-      .where("BPM", "<=", BPMend)
-      .orderBy(sortby, type)
-      .limit(40)
-      .offset(page * 40)
-      .get()
-      .then((data) => {
-        let items = [];
-        data.forEach((doc) => {
-          items.push({
-            itemId: doc.id,
-            createdAt: doc.data().createdAt,
-            BPM: doc.data().BPM,
-            genre: doc.data().genre,
-            imgPath: doc.data().imgPath,
-            price: doc.data().price,
-            tags: doc.data().tags,
-            title: doc.data().title,
-            views: doc.data().views,
-            userHandle: doc.data().userHandle,
-          });
-        });
-        return res.send(items);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).json({ error: err.code });
-      });
+    if (req.body.genre != null)
+        db.collection('item').where("genre.id", "==", req.body.genre).orderBy(sortby, type).get()
+            .then((data) => {
+                let items = [];
+                data.forEach((doc) => {
+                    items.push({
+                        itemId: doc.id,
+                        createdAt: doc.data().createdAt,
+                        BPM: doc.data().BPM,
+                        genre: doc.data().genre,
+                        imgPath: doc.data().imgPath,
+                        path: doc.data().path,
+                        price: doc.data().price,
+                        tags: doc.data().tags,
+                        title: doc.data().tags,
+                        views: doc.data().views,
+                        userHandle: doc.data().userHandle
+                    });
+                });
+                return res.json(items);
+            }).catch((err) => {
+                console.error(err);
+                res.status(500).json({ error: err.code });
+            });
+    else
+        db.collection('item').orderBy(sortby, type).get()
+            .then((data) => {
+                let items = [];
+                data.forEach((doc) => {
+                    items.push({
+                        itemId: doc.id,
+                        createdAt: doc.data().createdAt,
+                        BPM: doc.data().BPM,
+                        genre: doc.data().genre,
+                        imgPath: doc.data().imgPath,
+                        price: doc.data().price,
+                        tags: doc.data().tags,
+                        title: doc.data().title,
+                        views: doc.data().views,
+                        userHandle: doc.data().userHandle
+                    });
+                });
+                return res.json(items);
+            }).catch((err) => {
+                console.error(err);
+                res.status(500).json({ error: err.code });
+            });
 };
 exports.getItems = (req, res) => {
   db.collection("item")
