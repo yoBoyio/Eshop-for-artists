@@ -35,6 +35,7 @@ const {
   ItemsQuery,
   downloadItem,
   getUserItems,
+  downloadItems,
 } = require("./handlers/items");
 const { db } = require("./util/admin");
 const {
@@ -81,6 +82,7 @@ app.get("/items/:itemId", getItem);
 app.post("/items/:itemId", FBAuth, updateItem);
 app.delete("/items/:itemId", deleteItem);
 app.get("/items/download/:itemId", FBAuth, downloadItem);
+app.post("/downloadItems", FBAuth, downloadItems);
 app.get("/items/user/:userhandle", getUserItems);
 
 //cart routes

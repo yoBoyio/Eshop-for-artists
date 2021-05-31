@@ -392,6 +392,41 @@ exports.deleteItem = (req, res) => {
     });
 };
 
+exports.downloadItems = (req, res) => {
+  let itempro=0;
+  let downloadlinks=[];
+  req.body.itemId.forEach((item) =>{
+      db.collection("item")
+          .doc(item)
+          .get()
+          .then(async (doc) => {
+              if (!doc.exists) {
+                  let itemData = doc.data();
+                  let file = itemData.path.replace(
+                      "https://firebasestorage.googleapis.com/v0/b/score4-aa163.appspot.com/o/",
+                      ""
+                  );
+                  file = file.replace("?alt=media", "");
+                  console.log("DOWNLOAD BACKEND");
+                  const [metadata] = await admin
+                      .storage()
+                      .bucket("score4-aa163.appspot.com")
+                      .file(file)
+                      .getMetadata();
+
+                  downloadlinks.push(metadata.mediaLink);
+              }
+              itempro++;
+              if (itempro==req.body.itemId.length)
+                  res.status(200).json(downloadlinks);
+          })
+          .catch((err) => {
+          console.error(err);
+          return res.status(500).json({ error: err.code });
+          });
+  });
+};
+
 exports.downloadItem = (req, res) => {
   db.collection("item")
     .doc(req.params.itemId)
