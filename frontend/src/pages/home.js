@@ -2,7 +2,7 @@
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -12,7 +12,8 @@ import Chip from "@material-ui/core/Chip";
 
 //components
 import Profile from "../components/Profile";
-import { getItems } from "../redux/actions/dataActions";
+//actions
+import { getItems, sortbyItems } from "../redux/actions/dataActions";
 import { getFavorites, getCart } from "../redux/actions/dataActions";
 
 import BeatsCard from "../components/BeatsCard";
@@ -34,6 +35,13 @@ const styles = {
 };
 
 class home extends Component {
+  constructor() {
+    super();
+    this.state = {
+      color: "",
+      selected: null,
+    };
+  }
   componentDidMount() {
     this.setState(this.props.getItems());
     // this.props.getFavorites();
@@ -43,15 +51,29 @@ class home extends Component {
   render() {
     const { items, loading } = this.props.data;
     const { authenticated } = this.props.user;
-    const genres = [
-      { id: 1, text: "Pop" },
-      { id: 2, text: "Rap" },
-      { id: 3, text: "Rock" },
-      { id: 4, text: "Trap" },
-      { id: 5, text: "Metal" },
-      { id: 6, text: "Electronic" },
-      { id: 7, text: "Jazz" },
+    const sortby = [
+      { id: 1, text: "views" },
+      { id: 2, text: "high" },
+      { id: 3, text: "low" },
+      { id: 4, text: "createdAt" },
     ];
+    const sortbyAudio = this.props.sortbytracks;
+
+    //test Sortby
+    onsubmit = (sortbytext, id) => {
+      this.props.sortbyItems(sortbytext);
+      this.setState({ color: "secondary" });
+      this.setState({ selected: id });
+    };
+
+    const displaySortByItems =
+      sortbyAudio && sortbyAudio.length > 0 ? (
+        sortbyAudio.map((audio) => (
+          <BeatsCard key={audio.itemId} item={audio} />
+        ))
+      ) : (
+        <BeatsCard items={false} />
+      );
 
     const { classes } = this.props;
     const displayItems =
@@ -60,12 +82,15 @@ class home extends Component {
       ) : (
         <BeatsCard items={false} />
       );
-    const displayGemres = genres.map((g) => (
+    const displaySortby = sortby.map((g) => (
       <Chip
+        style={{ fontSize: "20px" }}
         size="medium"
         label={g.text}
         clickable
-        onClick={() => console.log("PRESSED")}
+        variant="default"
+        color={g.id == this.state.selected ? this.state.color : "default"}
+        onClick={() => onsubmit(g.text, g.id)}
       />
     ));
 
@@ -82,24 +107,23 @@ class home extends Component {
 
           {displayItems}
         </Grid>
-        <Grid item sm={4.2} xs={3}>
+        <Grid item sm={4.2} xs={3.7}>
           <Card className={classes.card}>
             <CardContent className={classes.content} style={{ marginLeft: 0 }}>
-              <Typography variant="h2">Genres</Typography>
-              {/* <div>{displayGemres}</div> */}
+              <Typography variant="h2">Sort by</Typography>
               <Grid
                 container
                 direction="row"
                 justify="space-around"
                 alignItems="center"
               >
-                {displayGemres}
+                {displaySortby}
               </Grid>
             </CardContent>
           </Card>
         </Grid>
 
-        <Grid item sm={4} xs={4} alignItems="flex-end">
+        <Grid item sm={3} xs={3} alignItems="flex-end">
           <Profile />
         </Grid>
       </Grid>
@@ -118,6 +142,7 @@ const mapActionsToProps = {
   getItems,
   getFavorites,
   getCart,
+  sortbyItems,
 };
 
 home.propTypes = {

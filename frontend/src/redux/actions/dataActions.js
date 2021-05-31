@@ -14,7 +14,7 @@ import {
   DELETE_CART,
   ADD_CART,
   GET_CART,
-  DOWNLOAD_ITEM,
+  SORT_BY,
 } from "../type";
 
 //favorites
@@ -139,6 +139,28 @@ export const getItems = () => (dispatch) => {
   dispatch({ type: LOADING_UI });
   api
     .get(`/items`)
+    .then((res) => {
+      dispatch({
+        type: SET_ITEMS,
+        payload: res.data,
+      });
+      dispatch({ type: STOP_LOADING_UI });
+    })
+    .catch((err) => {
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data,
+      });
+    });
+};
+
+//sortbyItems
+export const sortbyItems = (sortby) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+
+  setAuthorizationHeader();
+  api
+    .post("/items/discover", { sortby: sortby })
     .then((res) => {
       dispatch({
         type: SET_ITEMS,
