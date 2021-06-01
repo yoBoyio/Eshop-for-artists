@@ -78,7 +78,7 @@ const BeatsCard = ({ item, authenticated, downloadItem, download }) => {
           <Genres genres={item.genre} />
           {item.tags && item.tags.length > 0
             ? item.tags &&
-              item.tags.map((tag) => <Chip size="small" label={`#${tag}`} />)
+            item.tags.map((tag) => <Chip size="small" label={`#${tag}`} />)
             : null}
         </CardContent>
         <div style={{ display: "flex" }}>
@@ -100,10 +100,8 @@ const BeatsCard = ({ item, authenticated, downloadItem, download }) => {
             </AuthModal>
           )}
 
-          <MyButton tip="Like" style={{ paddingLeft: "1px" }}>
-            <FavoriteBorderIcon itemID={item.itemId} />
-          </MyButton>
-          {item.freeDownload === "true" ? (
+
+          {authenticated && item.freeDownload === "true" ? (
             <MyButton tip="Download Now" style={{ paddingLeft: "1px" }}>
               <GetAppIcon
                 itemID={item.itemId}

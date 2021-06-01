@@ -96,7 +96,6 @@ class Upload extends Component {
   handleToggle(value) {
     const currentIndex = this.state.checked.indexOf(value);
     const newChecked = [...this.state.checked];
-    console.log(value);
     if (currentIndex === -1) {
       newChecked.push(value);
       this.setState({
@@ -133,13 +132,11 @@ class Upload extends Component {
   //======================TEXTFIELDS=================//
 
   handleChange = (event) => {
-    console.log(event.target.name);
     this.setState({ [event.target.name]: event.target.value });
   };
   // ======================SUBMIT=====================//
 
   handleSubmit = (event) => {
-    event.preventDefault();
     //if no selected genres
     //Todo validate files input
 
@@ -154,23 +151,15 @@ class Upload extends Component {
     formData.append("img", this.state.photoFile);
     formData.append("handle", this.props.user.credentials.handle);
     formData.append("BPM", this.state.BPM);
-    // formData.append('genre', this.state.selectedGenres);
     formData.append("price", this.state.price);
-    // formData.append('tags', this.state.tags);
     formData.append("title", this.state.title);
     formData.append("freeDownload", this.state.switchChecked);
-    // this.state.selectedGenres.forEach((item) => {
-    //   formData.append("genre", item);
-    // });
     formData.append("genre", JSON.stringify(this.state.selectedGenres));
-
-    // this.state.tags.forEach((item) => {
-    //   formData.append("tags", item);
-    // });
     formData.append("tags", JSON.stringify(eval(this.state.tags)));
     //axios post request
     this.props.uploadItem(formData);
-    // console.log(JSON.stringify(eval(this.state.tags)));
+    event.preventDefault();
+
   };
 
   handleSlider = (event, newValue) => {
@@ -214,16 +203,7 @@ class Upload extends Component {
 
     return (
       <div>
-        <MyButton onClick={this.handleOpen} tip="Add">
-          <AddIcon />
-        </MyButton>
-        <MyButton
-          tip="Close"
-          onClick={this.handleClose}
-          tipClassName={classes.closeButton}
-        >
-          <CloseIcon />
-        </MyButton>
+
         <h1>Upload your track</h1>
 
         <form onSubmit={this.handleSubmit}>

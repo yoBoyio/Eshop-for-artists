@@ -18,7 +18,8 @@ import PublishIcon from "@material-ui/icons/Publish";
 import IconButton from "@material-ui/core/IconButton";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import SearchIcon from "@material-ui/icons/Search";
-import StarBorderIcon from '@material-ui/icons/StarBorder';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+
 const styles = {
   grow: {
     flexGrow: 1,
@@ -89,7 +90,7 @@ class Navbar extends Component {
               </Link>
               <Link to="/favorites">
                 <MyButton tip="Favorites">
-                  <StarBorderIcon />
+                  <FavoriteBorderIcon />
                 </MyButton>
               </Link>
               <Link to="/cart">
