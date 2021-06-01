@@ -154,13 +154,30 @@ export const getItems = () => (dispatch) => {
     });
 };
 
+export const downloadItems = (itemId) => (dispatch) => {
+  dispatch({ type: LOADING_UI });
+  console.log('kap')
+  setAuthorizationHeader();
+  api
+    .post(`/downloadItems`, { itemId: itemId })
+    .then((res) => {
+      console.log(res)
+      // window.open(res.data, "_blank");
+    })
+    .catch((err) => {
+      dispatch({
+        type: SET_ERRORS,
+        payload: err.response.data,
+      });
+    });
+};
 //sortbyItems
 export const sortbyItems = (sortby) => (dispatch) => {
   dispatch({ type: LOADING_UI });
 
   setAuthorizationHeader();
   api
-    .post("/items/discover", { sortby: sortby })
+    .post("/discover", { sortby: sortby })
     .then((res) => {
       dispatch({
         type: SET_ITEMS,

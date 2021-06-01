@@ -1,13 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import "../styles/favorites.css";
-import { getItems } from "../redux/actions/dataActions";
 import BeatsCard from "../components/BeatsCard";
 import { Link } from "react-router-dom";
-import MyButton from "../util/MyButton";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
-import { getCart } from "../redux/actions/dataActions";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -33,11 +30,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Cart = ({ handle, cart, authenticated, getItems }) => {
+export const Cart = ({ handle, cart, authenticated }) => {
   const classes = useStyles();
-  // useEffect(() => {
-  //   getCart()
-  // }, [])
+
+  let pricee = 0
+  const findPrice = (authenticated && cart.length > 0 ?
+    cart.map((item) => pricee += parseInt(item.price))
+    : pricee = 0)
   const notlogged = !authenticated ? (
     <h2 className="no-movies">Not a member</h2>
   ) : null;
@@ -50,8 +49,15 @@ export const Cart = ({ handle, cart, authenticated, getItems }) => {
         <span className="count-pill">
           {cart.length} {cart.length === 1 ? "Item" : "Items"}
         </span>
+        {authenticated && cart.length > 0 ?
+          <span className="count-pill">
+            {`Total:${pricee}€`}
+          </span>
+          : null
+        }
         <div>
-          {cart.length > 0 ? (
+
+          {authenticated && cart.length > 0 ? (
             <Button
               fullWidth
               variant="contained"
@@ -65,7 +71,6 @@ export const Cart = ({ handle, cart, authenticated, getItems }) => {
           ) : null}
         </div>
       </div>
-
       {authenticated && cart.length > 0 ? (
         <div className="movie-grid">
           {cart.map((item) =>
@@ -95,4 +100,4 @@ const mapStateToProps = (state) => ({
   cart: state.data.cart,
 });
 
-export default connect(mapStateToProps, { getItems })(Cart);
+export default connect(mapStateToProps,)(Cart);

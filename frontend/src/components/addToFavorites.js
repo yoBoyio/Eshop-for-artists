@@ -5,8 +5,6 @@ import IconButton from "@material-ui/core/IconButton";
 // import "../styles/favorites.css";
 import { connect } from "react-redux";
 import { addFavorites, deleteFavorites } from '../redux/actions/dataActions'
-import RemoveIcon from '@material-ui/icons/Remove';
-import AddIcon from "@material-ui/icons/Add";
 import MyButton from "../util/MyButton";
 
 export function AddToList({
@@ -26,7 +24,6 @@ export function AddToList({
         if (authenticated) {
             if (favorites) {
                 favorites.map((item) => {
-                    console.log(item)
                     if (itemId === item.itemId && !favoriteAction) {
                         setAdded(true);
                     }
@@ -52,7 +49,7 @@ export function AddToList({
     };
 
     // const icon = added ? <FavoriteIcon /> : <FavoriteBorderIcon />;
-    const icon = added ? <RemoveIcon /> : <AddIcon />;
+    const icon = added ? <FavoriteIcon /> : <FavoriteBorderIcon />;
 
     const body = (
         <div className="">

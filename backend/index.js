@@ -75,7 +75,7 @@ app.post("post/:postId/comment", FBAuth, commentOnPost);
 
 // Item routes
 app.post("/items", FBAuth, insertItem);
-app.post("/items/discover", discoverItems);
+app.post("/discover", discoverItems);
 app.get("/items/search/:query", ItemsQuery);
 app.get("/items", getItems);
 app.get("/items/:itemId", getItem);

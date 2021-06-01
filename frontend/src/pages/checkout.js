@@ -10,7 +10,6 @@ import useStyles from '../components/checkout/styles';
 const steps = ['Shipping address', 'Payment details'];
 
 const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
-    const [checkoutToken, setCheckoutToken] = useState(null);
     const [activeStep, setActiveStep] = useState(0);
     const [shippingData, setShippingData] = useState({});
     const classes = useStyles();
@@ -19,21 +18,7 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
     const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
     const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
-    // useEffect(() => {
-    //     if (cart.id) {
-    //         const generateToken = async () => {
-    //             try {
-    //                 const token = await commerce.checkout.generateToken(cart.id, { type: 'cart' });
 
-    //                 setCheckoutToken(token);
-    //             } catch {
-    //                 if (activeStep !== steps.length) history.push('/');
-    //             }
-    //         };
-
-    //         generateToken();
-    //     }
-    // }, [cart]);
 
     const test = (data) => {
         setShippingData(data);
@@ -41,7 +26,7 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
         nextStep();
     };
 
-    let Confirmation = () => (order.customer ? (
+    let Confirmation = () => (true ? (
         <>
             <div>
                 <Typography variant="h5">Thank you for your purchase, {order.customer.firstname} {order.customer.lastname}!</Typography>
@@ -67,9 +52,6 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
         );
     }
 
-    const Form = () => (activeStep === 0
-        ? <AddressForm checkoutToken={checkoutToken} nextStep={nextStep} setShippingData={setShippingData} test={test} />
-        : <PaymentForm checkoutToken={checkoutToken} nextStep={nextStep} backStep={backStep} shippingData={shippingData} onCaptureCheckout={onCaptureCheckout} />);
 
     return (
         <>
@@ -85,7 +67,7 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
                             </Step>
                         ))}
                     </Stepper>
-                    {activeStep === steps.length ? <Confirmation /> : <Form />}
+                    {activeStep === steps.length ? <Confirmation /> : <AddressForm nextStep={nextStep} />}
                 </Paper>
             </main>
         </>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import withStyles from '@material-ui/core/styles/withStyles'
 import PropTypes from 'prop-types';
-import AppIcon from '../images/score4.png';
+import AppIcon from '../images/beatbuy.png';
 import { Link } from 'react-router-dom';
 //MUI 
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -63,8 +63,6 @@ class login extends Component {
         signInFlow: "popup",
         signInOptions: [
             firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-            firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-            firebase.auth.GithubAuthProvider.PROVIDER_ID,
         ],
         callbacks: {
             signInSuccess: () => false

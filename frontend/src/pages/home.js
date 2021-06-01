@@ -60,7 +60,7 @@ class home extends Component {
     const sortbyAudio = this.props.sortbytracks;
 
     //test Sortby
-    onsubmit = (sortbytext, id) => {
+    const onsubmit2 = (sortbytext, id) => {
       this.props.sortbyItems(sortbytext);
       this.setState({ color: "secondary" });
       this.setState({ selected: id });
@@ -90,7 +90,7 @@ class home extends Component {
         clickable
         variant="default"
         color={g.id == this.state.selected ? this.state.color : "default"}
-        onClick={() => onsubmit(g.text, g.id)}
+        onClick={() => onsubmit2(g.text, g.id)}
       />
     ));
 
